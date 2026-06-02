@@ -28,7 +28,12 @@
     "domain": {
       "type": "string",
       "description": "Functional domain folder name",
-      "enum": ["product-delivery", "ai-engineering", "systems-architecture"]
+      "enum": [
+        "product-delivery",
+        "ai-engineering",
+        "systems-architecture",
+        "sales-architecture"
+      ]
     },
     "source_format": {
       "type": "string",
