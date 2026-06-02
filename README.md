@@ -56,11 +56,28 @@ curl -s https://m9751.github.io/prompt-registry/prompts_latest.json | jq '.promp
 
 ---
 
+## 📦 Two-Artifact Model
+
+**A registry PR is never "just a markdown file." Always verify the compiled JSON.**
+
+| Artifact | Who uses it |
+| :--- | :--- |
+| `prompts/.../*.md` | Authors, GitHub copy-paste |
+| `dist/prompts_latest.json` | Agents, apps, automation |
+
+The `.md` file is what you write. The JSON is what everything else consumes.
+
+- **`scripts/compile_prompts.py`** generates `dist/prompts_latest.json` from the `.md` files — run it locally after every prompt change.
+- **Feedback footer** — the compiler automatically appends a `Score this prompt` block to every `prompt_text` in the JSON. Do **not** add this to the `.md` source file; the compiler handles it. Open `dist/prompts_latest.json` after compiling to confirm the footer appears at the end of your prompt's `prompt_text`.
+- **Review rule:** open the JSON first when reviewing consumption, not the `.md` fence alone.
+
+---
+
 ## 🛠️ Contribution & Lifecycle Rules
 
 Want to add a prompt or optimize an existing one? Follow the PromptOps workflow:
 
-1. **Branching:** Create a feature branch off `main` (`feature/your-prompt-name`).
+1. **Branching:** Always branch from latest `origin/main`: `git fetch origin && git checkout -b feat/... origin/main`
 2. **Metadata:** Use the required YAML frontmatter blocks inside your file. Missing metadata fields will break the JSON compilation script during automated PR validation.
 3. **Versioning:** Bump versions using Semantic Versioning rules (`Major.Minor.Patch`).
 4. **Pull Requests:** Open a PR against `main`. Fill out the automated PR template entirely, attaching your before/after evaluation test runs.

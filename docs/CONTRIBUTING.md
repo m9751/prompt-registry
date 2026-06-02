@@ -19,8 +19,10 @@ pip install -r requirements.txt
 
 ### 1. Create a branch
 
+Always branch from the latest `origin/main` — a stale local main is the most common cause of missing compiler output in PRs:
+
 ```bash
-git checkout -b feature/your-prompt-name
+git fetch origin && git checkout -b feat/your-prompt-name origin/main
 ```
 
 ### 2. Create your prompt file
@@ -82,6 +84,8 @@ This will:
 
 Fix any `VALIDATION ERROR` messages before proceeding.
 
+**After running, open `dist/prompts_latest.json` and spot-check your prompt's `prompt_text` field.** It must end with the feedback footer (`Score this prompt: 1 / 2 / 3`). The compiler injects this automatically — do not add it to the `.md` source. If it's missing, you likely have a compile error or are reading a stale artifact.
+
 ### 6. Bump the version (for edits to existing prompts)
 
 If modifying an existing prompt, increment the `version` field in frontmatter:
@@ -102,6 +106,43 @@ gh pr create --base main --title "feat(prompts): add PRM-NBLM-005" --body "See P
 ```
 
 Fill out the PR template completely, including before/after LLM output samples.
+
+---
+
+## Two-Artifact Rule
+
+Registry PRs always touch two artifacts, not one:
+
+| Artifact | What it is | Who uses it |
+| :--- | :--- | :--- |
+| `prompts/.../*.md` | Authorable source | Authors, GitHub copy-paste |
+| `dist/prompts_latest.json` | Compiled contract | Agents, apps, automation |
+
+The `.md` is what you write. The JSON is what everything else consumes. A PR that only modifies the `.md` without regenerating the JSON is incomplete — CI will catch this, but catch it yourself first by running the compiler and reading the output.
+
+---
+
+## Prompt Feedback (Self-Improvement)
+
+Every compiled `prompt_text` in `dist/prompts_latest.json` ends with an automatically injected feedback footer:
+
+```
+---
+⬆️ Primary response above.
+Score this prompt: 1 (poor) / 2 (adequate) / 3 (excellent)
+What did it miss or get wrong? (one line)
+```
+
+**Do not add this to the `.md` source.** The compiler appends it during every compile run. This design means:
+- The `.md` file stays clean and authorable
+- Every agent or app that pulls the JSON always gets the feedback request
+- Feedback footers stay consistent without per-prompt maintenance
+
+If a prompt spec says "produce no other prose" (like strict output-format prompts), add one line in the prompt's Overview section:
+
+> *Registry JSON appends a feedback block after the primary output; respond to it after completing the mandatory checklist.*
+
+This prevents agents from treating the footer as contradictory to the output rules.
 
 ---
 
