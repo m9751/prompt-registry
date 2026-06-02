@@ -205,6 +205,7 @@ def regenerate_readme(prompts: list[dict]) -> None:
         "product-delivery": "🚀 Product & Delivery",
         "ai-engineering": "🧠 AI & Integration Engineering",
         "systems-architecture": "🛠️ Systems Architecture",
+        "sales-architecture": "💼 Sales & Architecture",
     }
     for prompt in prompts:
         by_domain.setdefault(prompt["domain"], []).append(prompt)

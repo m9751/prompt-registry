@@ -47,6 +47,11 @@ curl -s https://m9751.github.io/prompt-registry/prompts_latest.json | jq '.promp
 | `PRM-NBLM-003` | [HTML-Aware Slide Parser](prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md) | Transform an HTML slide deck into clean XML for downstream parsing | HTML DOM | NotebookLM / Claude | `1.0.0` | [View File](prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md) |
 | `PRM-NBLM-004` | [Architecture Semantic Compressor](prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md) | Extract system boundaries, data flows, and gaps from an HTML architecture deck | HTML DOM | NotebookLM / Long-Context LLMs | `1.1.0` | [View File](prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md) |
 
+### 💼 Sales & Architecture
+| ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `PRM-NBLM-005` | [Discovery-to-Architecture Extractor](prompts/sales-architecture/PRM-NBLM-005_discovery-to-architecture-extractor.md) | Transform discovery transcripts and notes into a structured brief for architecture diagram and proposal generation | Meeting Transcript / Notes / Architecture Document | Claude / Gemini | `1.0.0` | [View File](prompts/sales-architecture/PRM-NBLM-005_discovery-to-architecture-extractor.md) |
+
 <!-- PROMPT_CATALOG_END -->
 
 ---
