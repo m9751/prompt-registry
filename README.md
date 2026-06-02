@@ -45,6 +45,7 @@ curl -s https://m9751.github.io/prompt-registry/prompts_latest.json | jq '.promp
 | ID | Prompt Title | Source Format | Target Model | Version | Link |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `PRM-NBLM-003` | [HTML-Aware Slide Parser](prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md) | HTML DOM | NotebookLM / Claude | `1.0.0` | [View File](prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md) |
+| `PRM-NBLM-004` | [Architecture Semantic Compressor](prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md) | HTML DOM | NotebookLM / Long-Context LLMs | `1.1.0` | [View File](prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md) |
 
 <!-- PROMPT_CATALOG_END -->
 
