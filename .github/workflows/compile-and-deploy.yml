@@ -60,6 +60,22 @@ jobs:
           echo "=== dist/ artifact sizes ==="
           ls -lh dist/ 2>/dev/null || echo "No dist/ output found"
 
+  request-codex-review:
+    name: Request Codex Review
+    needs: validate
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Trigger Codex via PR comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
+            --body "@codex review"
+
   deploy:
     name: Deploy to GitHub Pages
     needs: validate
