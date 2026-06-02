@@ -1,0 +1,87 @@
+# compile-and-deploy.yml — PromptOps Registry CI/CD
+#
+# Security notes (github/AGENTS.md compliance):
+#   Rule 2: All actions/* are GitHub-owned and exempt from SHA-pinning requirement.
+#            No third-party actions are used in this workflow.
+#   Rule 3: No cleartext secrets. GITHUB_TOKEN is auto-provisioned by GitHub.
+#   Rule 4: No ${{ github.event.* }} context values are used in any run: step.
+#
+# Triggers:
+#   - pull_request targeting main: runs validation only
+#   - push to main: runs validation + deploys dist/ to GitHub Pages
+
+name: Compile and Deploy Prompt Registry
+
+# Fail-closed default: all jobs start with no permissions.
+# Jobs that need access declare it explicitly.
+permissions: {}
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validate & Compile
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run compile script (validation + artifact build)
+        run: python scripts/compile_prompts.py
+
+      - name: Report artifact sizes
+        run: |
+          echo "=== dist/ artifact sizes ==="
+          ls -lh dist/ 2>/dev/null || echo "No dist/ output found"
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run compile script (build artifacts for deploy)
+        run: python scripts/compile_prompts.py
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+          # dist/ is git-ignored; CI generates it fresh on every deploy run
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
