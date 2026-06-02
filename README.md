@@ -35,6 +35,7 @@ curl -s https://m9751.github.io/prompt-registry/prompts_latest.json | jq '.promp
 | ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `PRM-NBLM-001` | [Slide-to-Human Briefing Master](prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md) | Convert a slide deck into a human-readable executive summary | PPTX / PDF | NotebookLM | `1.0.0` | [View File](prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md) |
+| `PRM-PDLV-006` | [Static Guide Overview Video — Agent System Prompt](prompts/product-delivery/PRM-PDLV-006_static-guide-overview-video.md) | Build or rebuild a narrated overview video embedded in a static HTML product guide | HTML guide URL + scene spec (JSON/YAML) + image captures | Claude Code / Cursor Agent | `1.0.0` | [View File](prompts/product-delivery/PRM-PDLV-006_static-guide-overview-video.md) |
 
 ### 🧠 AI & Integration Engineering
 | ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
