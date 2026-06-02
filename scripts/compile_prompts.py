@@ -205,13 +205,14 @@ def regenerate_readme(prompts: list[dict]) -> None:
         if not domain_prompts:
             continue
         table_lines.append(f"\n### {label}")
-        table_lines.append("| ID | Prompt Title | Source Format | Target Model | Version | Link |")
-        table_lines.append("| :--- | :--- | :--- | :--- | :--- | :--- |")
+        table_lines.append("| ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |")
+        table_lines.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
         for p in domain_prompts:
             link = f"[View File]({p['source_file']})"
             title_link = f"[{p['title']}]({p['source_file']})"
+            use_for = p.get("use_for", "")
             table_lines.append(
-                f"| `{p['id']}` | {title_link} | {p['source_format']} | {p['target_orchestrator']} | `{p['version']}` | {link} |"
+                f"| `{p['id']}` | {title_link} | {use_for} | {p['source_format']} | {p['target_orchestrator']} | `{p['version']}` | {link} |"
             )
 
     catalog_block = "\n".join(table_lines) + "\n"

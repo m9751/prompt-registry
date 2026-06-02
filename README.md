@@ -32,20 +32,20 @@ curl -s https://m9751.github.io/prompt-registry/prompts_latest.json | jq '.promp
 <!-- PROMPT_CATALOG_START -->
 
 ### 🚀 Product & Delivery
-| ID | Prompt Title | Source Format | Target Model | Version | Link |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `PRM-NBLM-001` | [Slide-to-Human Briefing Master](prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md) | PPTX / PDF | NotebookLM | `1.0.0` | [View File](prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md) |
+| ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `PRM-NBLM-001` | [Slide-to-Human Briefing Master](prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md) | Convert a slide deck into a human-readable executive summary | PPTX / PDF | NotebookLM | `1.0.0` | [View File](prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md) |
 
 ### 🧠 AI & Integration Engineering
-| ID | Prompt Title | Source Format | Target Model | Version | Link |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `PRM-NBLM-002` | [Sequential Machine-Optimized Extractor](prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md) | PPTX / PDF | Long-Context LLMs | `1.0.0` | [View File](prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md) |
+| ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `PRM-NBLM-002` | [Sequential Machine-Optimized Extractor](prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md) | Extract structured JSON data from a slide deck for app ingestion | PPTX / PDF | Long-Context LLMs | `1.0.0` | [View File](prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md) |
 
 ### 🛠️ Systems Architecture
-| ID | Prompt Title | Source Format | Target Model | Version | Link |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `PRM-NBLM-003` | [HTML-Aware Slide Parser](prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md) | HTML DOM | NotebookLM / Claude | `1.0.0` | [View File](prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md) |
-| `PRM-NBLM-004` | [Architecture Semantic Compressor](prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md) | HTML DOM | NotebookLM / Long-Context LLMs | `1.1.0` | [View File](prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md) |
+| ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `PRM-NBLM-003` | [HTML-Aware Slide Parser](prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md) | Transform an HTML slide deck into clean XML for downstream parsing | HTML DOM | NotebookLM / Claude | `1.0.0` | [View File](prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md) |
+| `PRM-NBLM-004` | [Architecture Semantic Compressor](prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md) | Extract system boundaries, data flows, and gaps from an HTML architecture deck | HTML DOM | NotebookLM / Long-Context LLMs | `1.1.0` | [View File](prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md) |
 
 <!-- PROMPT_CATALOG_END -->
 
