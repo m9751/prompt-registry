@@ -47,8 +47,12 @@
 
 ## Compilation Checklist
 
-- [ ] `python scripts/compile_prompts.py` ran locally with no errors
-- [ ] `dist/prompts_latest.json` updated in this PR
+- [ ] Branched from latest `origin/main` (not stale local main): `git fetch origin && git checkout -b feat/... origin/main`
+- [ ] `python scripts/compile_prompts.py` ran locally with zero errors
+- [ ] Spot-checked: opened `dist/prompts_latest.json`, confirmed this prompt's `prompt_text` ends with the feedback footer (`Score this prompt: 1 / 2 / 3`)
+- [ ] `dist/prompts_latest.json` included in this PR
 - [ ] README catalog auto-regenerated (no manual edits to the catalog section)
 - [ ] `version` field incremented in frontmatter per SemVer rules
 - [ ] `last_updated` date set to today
+
+> **Note for reviewers:** JSON consumers automatically receive the feedback footer appended to every `prompt_text`. This is injected by the compiler and is not present in the `.md` source file.

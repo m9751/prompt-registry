@@ -45,6 +45,16 @@ jobs:
       - name: Run compile script (validation + artifact build)
         run: python scripts/compile_prompts.py
 
+      - name: Verify feedback footer present on all prompts
+        run: |
+          echo "=== Checking feedback footer on all compiled prompt_text fields ==="
+          missing=$(jq -r '.prompts[] | select(.prompt_text | contains("Score this prompt") | not) | .id' dist/prompts_latest.json)
+          if [ -n "$missing" ]; then
+            echo "FOOTER MISSING on: $missing"
+            exit 1
+          fi
+          echo "All prompts have feedback footer."
+
       - name: Report artifact sizes
         run: |
           echo "=== dist/ artifact sizes ==="
