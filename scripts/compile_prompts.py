@@ -181,7 +181,32 @@ def compile_registry() -> None:
     # Regenerate README catalog
     regenerate_readme(prompts)
 
+    # Generate HTML wrapper for AI agents that cannot fetch raw JSON
+    generate_html_wrapper(payload_json)
+
     print(f"\nCompilation complete: {len(prompts)} prompt(s) processed.")
+
+
+# ---------------------------------------------------------------------------
+# HTML wrapper for AI agent consumers (Gemini etc.)
+# ---------------------------------------------------------------------------
+
+def generate_html_wrapper(payload_json: str) -> None:
+    pretty = json.dumps(json.loads(payload_json), indent=2, ensure_ascii=False)
+    html = f"""<!DOCTYPE html>
+<html>
+<head><title>Enterprise Prompt Registry</title></head>
+<body>
+<h1>Enterprise Prompt Registry</h1>
+<p>Machine-readable registry payload. For AI agents that cannot fetch raw JSON directly.</p>
+<pre id="registry">
+{pretty}
+</pre>
+</body>
+</html>"""
+    html_path = DIST_DIR / "registry.html"
+    html_path.write_text(html, encoding="utf-8")
+    print(f"  Written: {html_path.relative_to(REPO_ROOT)}")
 
 
 # ---------------------------------------------------------------------------
