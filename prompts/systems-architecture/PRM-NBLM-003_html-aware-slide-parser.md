@@ -7,7 +7,7 @@ target_orchestrator: NotebookLM / Claude
 downstream_consumer: Application (XML output)
 version: 1.0.0
 last_updated: 2026-06-02
-hosted_url: https://m9751.github.io/prompt-registry/prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md
+hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md
 ---
 
 ## Overview

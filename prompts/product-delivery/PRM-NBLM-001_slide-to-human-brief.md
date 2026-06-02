@@ -7,7 +7,7 @@ target_orchestrator: NotebookLM
 downstream_consumer: Human (copy-paste)
 version: 1.0.0
 last_updated: 2026-06-02
-hosted_url: https://m9751.github.io/prompt-registry/prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md
+hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md
 ---
 
 ## Overview
