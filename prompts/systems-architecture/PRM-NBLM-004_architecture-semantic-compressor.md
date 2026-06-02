@@ -7,7 +7,7 @@ target_orchestrator: NotebookLM / Long-Context LLMs
 downstream_consumer: Application (XML payload) / LLM downstream analysis
 version: 1.1.0
 last_updated: 2026-06-02
-hosted_url: https://m9751.github.io/prompt-registry/prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md
+hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md
 ---
 
 ## Overview

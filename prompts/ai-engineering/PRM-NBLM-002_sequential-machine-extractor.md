@@ -7,7 +7,7 @@ target_orchestrator: Long-Context LLMs
 downstream_consumer: Application (programmatic)
 version: 1.0.0
 last_updated: 2026-06-02
-hosted_url: https://m9751.github.io/prompt-registry/prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md
+hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md
 ---
 
 ## Overview
