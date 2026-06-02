@@ -19,7 +19,7 @@
     "id": {
       "type": "string",
       "description": "Unique prompt identifier, e.g. PRM-NBLM-001",
-      "pattern": "^[A-Z0-9\\-]+$"
+      "pattern": "^[A-Z0-9\-]+$"
     },
     "title": {
       "type": "string",
@@ -28,7 +28,7 @@
     "domain": {
       "type": "string",
       "description": "Functional domain folder name",
-      "enum": ["product-delivery", "ai-engineering", "systems-architecture"]
+      "enum": ["product-delivery", "ai-engineering", "systems-architecture", "sales-architecture"]
     },
     "source_format": {
       "type": "string",
@@ -45,12 +45,12 @@
     "version": {
       "type": "string",
       "description": "Semantic version string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+      "pattern": "^\d+\.\d+\.\d+$"
     },
     "last_updated": {
       "type": "string",
       "description": "ISO date of last update",
-      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+      "pattern": "^\d{4}-\d{2}-\d{2}$"
     },
     "hosted_url": {
       "type": "string",
