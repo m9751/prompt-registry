@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PromptFrontmatter",
+  "description": "Required YAML frontmatter schema for all prompt files in the registry.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "domain",
+    "source_format",
+    "target_orchestrator",
+    "downstream_consumer",
+    "version",
+    "last_updated",
+    "hosted_url"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique prompt identifier, e.g. PRM-NBLM-001",
+      "pattern": "^[A-Z0-9\\-]+$"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable prompt title"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Functional domain folder name",
+      "enum": ["product-delivery", "ai-engineering", "systems-architecture"]
+    },
+    "source_format": {
+      "type": "string",
+      "description": "Input format this prompt operates on, e.g. PPTX / PDF"
+    },
+    "target_orchestrator": {
+      "type": "string",
+      "description": "Target AI model or platform, e.g. NotebookLM"
+    },
+    "downstream_consumer": {
+      "type": "string",
+      "description": "Who or what consumes the output, e.g. Human (copy-paste)"
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "last_updated": {
+      "type": "string",
+      "description": "ISO date of last update",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "hosted_url": {
+      "type": "string",
+      "description": "Full URL to the raw file on GitHub Pages or CDN",
+      "format": "uri"
+    }
+  }
+}
