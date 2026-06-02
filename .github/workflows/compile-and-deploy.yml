@@ -77,7 +77,7 @@ jobs:
         run: python scripts/compile_prompts.py
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist/
           # dist/ is git-ignored; CI generates it fresh on every deploy run
