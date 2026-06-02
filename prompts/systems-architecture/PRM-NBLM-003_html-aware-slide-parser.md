@@ -8,6 +8,7 @@ downstream_consumer: Application (XML output)
 version: 1.0.0
 last_updated: 2026-06-02
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md
+use_for: Transform an HTML slide deck into clean XML for downstream parsing
 ---
 
 ## Overview

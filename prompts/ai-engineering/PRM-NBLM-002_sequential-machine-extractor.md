@@ -8,6 +8,7 @@ downstream_consumer: Application (programmatic)
 version: 1.0.0
 last_updated: 2026-06-02
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md
+use_for: Extract structured JSON data from a slide deck for app ingestion
 ---
 
 ## Overview

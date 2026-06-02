@@ -8,6 +8,7 @@ downstream_consumer: Application (XML payload) / LLM downstream analysis
 version: 1.1.0
 last_updated: 2026-06-02
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md
+use_for: Extract system boundaries, data flows, and gaps from an HTML architecture deck
 ---
 
 ## Overview

@@ -52,7 +52,8 @@ target_orchestrator: NotebookLM
 downstream_consumer: Human (copy-paste)
 version: 1.0.0
 last_updated: 2026-06-02
-hosted_url: https://m9751.github.io/prompt-registry/prompts/product-delivery/PRM-NBLM-005_quarterly-summary-extractor.md
+hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/product-delivery/PRM-NBLM-005_quarterly-summary-extractor.md
+use_for: Convert a quarterly slide deck into an executive summary
 ---
 ```
 

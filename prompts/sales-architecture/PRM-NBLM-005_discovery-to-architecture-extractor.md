@@ -8,6 +8,7 @@ downstream_consumer: Architecture diagram generator / Commercial proposal genera
 version: 1.0.0
 last_updated: 2026-06-02
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/sales-architecture/PRM-NBLM-005_discovery-to-architecture-extractor.md
+use_for: Transform discovery transcripts and notes into a structured brief for architecture diagram and proposal generation
 ---
 
 ## Overview

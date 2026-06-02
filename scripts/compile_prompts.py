@@ -10,6 +10,7 @@ Responsibilities:
   4. Check for duplicate IDs across all files
   5. Write dist/prompts_latest.json and dist/prompts_v{version}.json
   6. Regenerate README.md catalog table between sentinel comments
+  7. Append feedback footer to every compiled prompt_text
 
 Exit codes:
   0 = success
@@ -38,6 +39,15 @@ CATALOG_START = "<!-- PROMPT_CATALOG_START -->"
 CATALOG_END = "<!-- PROMPT_CATALOG_END -->"
 
 GITHUB_RAW_BASE = "https://m9751.github.io/prompt-registry"
+
+# Feedback footer injected into every compiled prompt_text.
+# Agents and humans pulling from the JSON see this after the primary response.
+FEEDBACK_FOOTER = (
+    "\n\n---\n"
+    "⬆️ Primary response above.\n"
+    "Score this prompt: 1 (poor) / 2 (adequate) / 3 (excellent)\n"
+    "What did it miss or get wrong? (one line)"
+)
 
 
 # ---------------------------------------------------------------------------
@@ -141,7 +151,7 @@ def compile_registry() -> None:
 
         prompts.append({
             **frontmatter,
-            "prompt_text": prompt_text,
+            "prompt_text": prompt_text + FEEDBACK_FOOTER,
             "source_file": rel_path.as_posix(),
         })
 
@@ -195,6 +205,7 @@ def regenerate_readme(prompts: list[dict]) -> None:
         "product-delivery": "🚀 Product & Delivery",
         "ai-engineering": "🧠 AI & Integration Engineering",
         "systems-architecture": "🛠️ Systems Architecture",
+        "sales-architecture": "💼 Sales & Architecture",
     }
     for prompt in prompts:
         by_domain.setdefault(prompt["domain"], []).append(prompt)
@@ -205,13 +216,14 @@ def regenerate_readme(prompts: list[dict]) -> None:
         if not domain_prompts:
             continue
         table_lines.append(f"\n### {label}")
-        table_lines.append("| ID | Prompt Title | Source Format | Target Model | Version | Link |")
-        table_lines.append("| :--- | :--- | :--- | :--- | :--- | :--- |")
+        table_lines.append("| ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |")
+        table_lines.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
         for p in domain_prompts:
             link = f"[View File]({p['source_file']})"
             title_link = f"[{p['title']}]({p['source_file']})"
+            use_for = p.get("use_for", "")
             table_lines.append(
-                f"| `{p['id']}` | {title_link} | {p['source_format']} | {p['target_orchestrator']} | `{p['version']}` | {link} |"
+                f"| `{p['id']}` | {title_link} | {use_for} | {p['source_format']} | {p['target_orchestrator']} | `{p['version']}` | {link} |"
             )
 
     catalog_block = "\n".join(table_lines) + "\n"
