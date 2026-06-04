@@ -22,6 +22,7 @@ import os
 import re
 import sys
 from pathlib import Path
+import datetime
 
 import yaml
 import jsonschema
@@ -99,6 +100,39 @@ def _fail(message: str) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Domain AGENTS.md parser
+# ---------------------------------------------------------------------------
+
+def parse_domain_agents_md(domain_path: Path) -> dict:
+    """
+    Parse the ## Routing section from a domain's AGENTS.md.
+    Returns dict with description, use_when, not_when (all str).
+    Returns empty strings if AGENTS.md is missing or malformed — never fails the build.
+    """
+    agents_path = domain_path / "AGENTS.md"
+    if not agents_path.exists():
+        return {"description": "", "use_when": "", "not_when": ""}
+
+    content = agents_path.read_text(encoding="utf-8")
+
+    routing_match = re.search(r"## Routing\n(.*?)(?=\n##|\Z)", content, re.DOTALL)
+    if not routing_match:
+        return {"description": "", "use_when": "", "not_when": ""}
+
+    routing_block = routing_match.group(1)
+
+    def extract_key(key: str) -> str:
+        m = re.search(rf"^{key}:\s*(.+?)(?=\n\w[\w_]*:|\Z)", routing_block, re.MULTILINE | re.DOTALL)
+        return m.group(1).strip() if m else ""
+
+    return {
+        "description": extract_key("description"),
+        "use_when": extract_key("use_when"),
+        "not_when": extract_key("not_when"),
+    }
+
+
+# ---------------------------------------------------------------------------
 # Schema validation
 # ---------------------------------------------------------------------------
 
@@ -127,7 +161,7 @@ def compile_registry() -> None:
     if not PROMPTS_DIR.exists():
         _fail(f"prompts/ directory not found at {PROMPTS_DIR}")
 
-    prompt_files = sorted(PROMPTS_DIR.rglob("*.md"))
+    prompt_files = sorted(f for f in PROMPTS_DIR.rglob("*.md") if f.name != "AGENTS.md")
     if not prompt_files:
         _fail("No prompt files found in prompts/")
 
@@ -183,6 +217,7 @@ def compile_registry() -> None:
 
     # Generate HTML wrapper for AI agents that cannot fetch raw JSON
     generate_html_wrapper(payload_json)
+    generate_domains_catalog(prompts)
 
     print(f"\nCompilation complete: {len(prompts)} prompt(s) processed.")
 
@@ -207,6 +242,54 @@ def generate_html_wrapper(payload_json: str) -> None:
     html_path = DIST_DIR / "registry.html"
     html_path.write_text(html, encoding="utf-8")
     print(f"  Written: {html_path.relative_to(REPO_ROOT)}")
+
+
+# ---------------------------------------------------------------------------
+# Domain catalog (domains.json)
+# ---------------------------------------------------------------------------
+
+def generate_domains_catalog(prompts: list[dict]) -> None:
+    """
+    Emit dist/domains.json — machine-readable catalog of all prompt domains.
+    Reads each domain's AGENTS.md ## Routing section for description/use_when/not_when.
+    prompt_count is computed from the already-compiled prompts list (authoritative).
+    """
+    counts: dict[str, int] = {}
+    for p in prompts:
+        counts[p["domain"]] = counts.get(p["domain"], 0) + 1
+
+    domain_order = [
+        "product-delivery",
+        "ai-engineering",
+        "systems-architecture",
+        "sales-architecture",
+    ]
+
+    domains = []
+    for domain_name in domain_order:
+        domain_path = PROMPTS_DIR / domain_name
+        routing = parse_domain_agents_md(domain_path)
+        domains.append({
+            "name": domain_name,
+            "path": f"prompts/{domain_name}",
+            "description": routing["description"],
+            "use_when": routing["use_when"],
+            "not_when": routing["not_when"],
+            "prompt_count": counts.get(domain_name, 0),
+        })
+
+    catalog = {
+        "schema_version": "1.0",
+        "generated_at": datetime.date.today().isoformat(),
+        "domains": domains,
+    }
+
+    catalog_path = DIST_DIR / "domains.json"
+    catalog_path.write_text(
+        json.dumps(catalog, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    print(f"  Written: {catalog_path.relative_to(REPO_ROOT)}")
 
 
 # ---------------------------------------------------------------------------
