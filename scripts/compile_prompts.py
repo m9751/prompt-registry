@@ -265,6 +265,11 @@ def generate_domains_catalog(prompts: list[dict]) -> None:
         "sales-architecture",
     ]
 
+    # Warn if any compiled domain is not in domain_order (would be silently omitted)
+    for discovered in counts:
+        if discovered not in domain_order:
+            print(f"  WARNING: domain '{discovered}' has compiled prompts but is not in domain_order — add it to generate_domains_catalog()", file=sys.stderr)
+
     domains = []
     for domain_name in domain_order:
         domain_path = PROMPTS_DIR / domain_name
