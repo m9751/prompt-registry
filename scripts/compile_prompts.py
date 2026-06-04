@@ -91,12 +91,45 @@ def extract_frontmatter_and_prompt(filepath: Path) -> tuple[dict, str]:
     if len(fence_blocks) > 1:
         _fail(f"{filepath}: {len(fence_blocks)} fenced code blocks found — exactly 1 required")
 
-    return frontmatter, fence_blocks[0].strip()
+    return frontmatter, fence_blocks[0].strip(), body
 
 
 def _fail(message: str) -> None:
     print(f"VALIDATION ERROR: {message}", file=sys.stderr)
     sys.exit(1)
+
+
+# ---------------------------------------------------------------------------
+# Fence boundary check (R4)
+# ---------------------------------------------------------------------------
+
+# Matches CSS hex color tokens: #RGB, #RRGGBB, #RGBA, #RRGGBBAA
+_HEX_TOKEN_RE = re.compile(r"#[0-9A-Fa-f]{3,8}\b")
+
+
+def check_fence_boundary(filepath: Path, body: str, prompt_text: str) -> None:
+    """
+    R4: Verify that every hex color token in the Overview (outside the fence)
+    also appears inside the fenced code block (prompt_text).
+
+    If a token is referenced in the Overview but absent from prompt_text, agents
+    consuming prompt_text from the compiled JSON will not see it — the reference
+    is broken. Exit 1 on violation so CI catches this class of error automatically.
+    """
+    # Extract the overview portion: everything before the first fence block
+    overview = body.split("```")[0] if "```" in body else body
+
+    overview_tokens = set(_HEX_TOKEN_RE.findall(overview))
+    fence_tokens = set(_HEX_TOKEN_RE.findall(prompt_text))
+
+    missing = overview_tokens - fence_tokens
+    if missing:
+        _fail(
+            f"{filepath}: [FENCE BOUNDARY] Hex token(s) {sorted(missing)} "
+            f"referenced in Overview but absent from prompt_text — "
+            f"agents consuming the compiled JSON cannot see them. "
+            f"Move these tokens inside the fenced code block."
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -169,8 +202,9 @@ def compile_registry() -> None:
     seen_ids: dict[str, Path] = {}
 
     for filepath in prompt_files:
-        frontmatter, prompt_text = extract_frontmatter_and_prompt(filepath)
+        frontmatter, prompt_text, body = extract_frontmatter_and_prompt(filepath)
         validate_frontmatter(frontmatter, schema, filepath)
+        check_fence_boundary(filepath, body, prompt_text)
 
         pid = frontmatter["id"]
         if pid in seen_ids:
