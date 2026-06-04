@@ -86,3 +86,20 @@ A PR that only modifies `.md` without regenerating the JSON is incomplete. CI wi
 | `docs/CONTRIBUTING.md` | Full contributor guide |
 | `.github/PULL_REQUEST_TEMPLATE.md` | PR checklist |
 | `.github/workflows/compile-and-deploy.yml` | CI/CD pipeline |
+
+---
+
+## Known anti-patterns
+
+### Orphan `main` initialization (2026-06-02)
+
+**What happened:** repo was initialized with two disconnected root commits 45 seconds apart — one on `feat/initial-scaffold`, one on `main`. The local clone tracked the wrong one, causing `git pull` to fail with "not possible to fast-forward" after 10 PRs merged.
+
+**Rule:** never create `main` as an orphan (`git checkout --orphan main`). Always establish `main` by merging the scaffold branch. Correct sequence:
+```bash
+git checkout -b main          # from the scaffold branch, not --orphan
+git push origin main
+# set main as default branch in GitHub settings
+```
+
+**Full RCA:** `docs/rca-divergence-2026-06-02.md`
