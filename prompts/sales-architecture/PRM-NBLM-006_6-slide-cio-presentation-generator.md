@@ -5,7 +5,7 @@ domain: sales-architecture
 source_format: Structured Technical Brief (PRM-NBLM-005 output)
 target_orchestrator: Claude (Advanced Chat / Claude Code)
 downstream_consumer: Human presenter / Marp / HTML5+Tailwind / python-pptx
-version: 1.0.0
+version: 1.1.0
 last_updated: 2026-06-04
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/sales-architecture/PRM-NBLM-006_6-slide-cio-presentation-generator.md
 use_for: Transform a PRM-NBLM-005 Structured Technical Brief into a 6-slide CIO-ready architecture presentation
@@ -20,6 +20,8 @@ Stage 2 of the Discovery-to-Presentation pipeline. Consumes the Structured Techn
 **Persona:** Elite Enterprise Integration Architect and Technical Presales Director specializing in MuleSoft (Anypoint Platform, DataGraph, Agentic Fabric) and Informatica (IDMC, MDM, Data Governance), presenting to a skeptical CIO/CTO audience.
 
 **Pipeline relationship:** `PRM-NBLM-005` → **`PRM-NBLM-006`**. The inter-agent transfer spec describing this two-step pipeline is maintained in `docs/pipeline-discovery-to-presentation.md` in this repository.
+
+*Registry JSON appends a feedback block after the primary output; respond to it after your compilation engine output is complete.*
 
 ## Branding Tokens (MuleSoft)
 
@@ -124,7 +126,7 @@ The Structured Technical Brief above is your exclusive factual grounding source.
 # OUTPUT FORMAT
 Declare your target compilation engine before generating output. Use the TARGET_ENGINE value supplied in the INPUT CONTRACT (default: `marp`):
 - **marp** → Marp Markdown — for terminal/programmatic generation
-- **html** → HTML5 + Tailwind CSS — for browser rendering or design handoff (apply MuleSoft CSS variables above)
+- **html** → HTML5 + Tailwind CSS — for browser rendering or design handoff (apply the CSS variables defined below)
 - **pptx** → python-pptx script — for PowerPoint automation
 
 # RE-LAYOUT PROTOCOL
@@ -132,4 +134,15 @@ Two independent triggers:
 - **Bullet-count trigger (all slides):** if any single column contains >4 bullet points, automatically split the column into a second visual panel.
 - **Layout-ratio trigger (Slide 1 only):** if the 60/40 left/right split is violated, re-split the content to restore the ratio.
 In both cases: preserve all technical detail — never truncate content to maintain visual cleanliness.
+
+---
+## CSS Variables (html output path)
+:root {
+  --blue-20: #032D60;
+  --blue-50: #0176D3;
+  --cloud-blue-95: #EAF5FE;
+  --orange-70: #FE9339;
+  --green-65: #41B658;
+  --font-family: 'Salesforce Sans', 'SF Pro Display', Arial, sans-serif;
+}
 ```

@@ -52,7 +52,7 @@ curl -s https://m9751.github.io/prompt-registry/prompts_latest.json | jq '.promp
 | ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `PRM-NBLM-005` | [Discovery-to-Architecture Extractor](prompts/sales-architecture/PRM-NBLM-005_discovery-to-architecture-extractor.md) | Transform discovery transcripts and notes into a structured brief for architecture diagram and proposal generation | Meeting Transcript / Notes / Architecture Document | Claude / Gemini | `1.0.0` | [View File](prompts/sales-architecture/PRM-NBLM-005_discovery-to-architecture-extractor.md) |
-| `PRM-NBLM-006` | [6-Slide Enterprise CIO Presentation Generator](prompts/sales-architecture/PRM-NBLM-006_6-slide-cio-presentation-generator.md) | Transform a PRM-NBLM-005 Structured Technical Brief into a 6-slide CIO-ready architecture presentation | Structured Technical Brief (PRM-NBLM-005 output) | Claude (Advanced Chat / Claude Code) | `1.0.0` | [View File](prompts/sales-architecture/PRM-NBLM-006_6-slide-cio-presentation-generator.md) |
+| `PRM-NBLM-006` | [6-Slide Enterprise CIO Presentation Generator](prompts/sales-architecture/PRM-NBLM-006_6-slide-cio-presentation-generator.md) | Transform a PRM-NBLM-005 Structured Technical Brief into a 6-slide CIO-ready architecture presentation | Structured Technical Brief (PRM-NBLM-005 output) | Claude (Advanced Chat / Claude Code) | `1.1.0` | [View File](prompts/sales-architecture/PRM-NBLM-006_6-slide-cio-presentation-generator.md) |
 
 <!-- PROMPT_CATALOG_END -->
 
