@@ -297,6 +297,7 @@ def generate_domains_catalog(prompts: list[dict]) -> None:
         "ai-engineering",
         "systems-architecture",
         "sales-architecture",
+        "presentation",
     ]
 
     # Warn if any compiled domain is not in domain_order (would be silently omitted)
@@ -353,6 +354,7 @@ def regenerate_readme(prompts: list[dict]) -> None:
         "ai-engineering": "🧠 AI & Integration Engineering",
         "systems-architecture": "🛠️ Systems Architecture",
         "sales-architecture": "💼 Sales & Architecture",
+        "presentation": "🎨 Presentation",
     }
     for prompt in prompts:
         by_domain.setdefault(prompt["domain"], []).append(prompt)
