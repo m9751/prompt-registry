@@ -20,7 +20,7 @@ A version-controlled prompt registry with automated validation, dual delivery (h
 2. **Create a `.md` file** under `prompts/<domain>/`:
    - File name: `PRM-<MODEL>-<NNN>_<slug>.md`
    - Required frontmatter fields: `id`, `title`, `domain`, `source_format`, `target_orchestrator`, `downstream_consumer`, `version`, `last_updated`, `hosted_url`, `use_for`
-   - Domain enum: `product-delivery`, `ai-engineering`, `systems-architecture`, `sales-architecture`
+   - Domain enum: `product-delivery`, `ai-engineering`, `systems-architecture`, `sales-architecture`, `presentation`
    - Prompt text lives in exactly one fenced code block after the frontmatter
 
 3. **Run the compiler** — this is mandatory:
