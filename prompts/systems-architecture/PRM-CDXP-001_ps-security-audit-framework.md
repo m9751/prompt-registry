@@ -3,7 +3,7 @@ id: PRM-CDXP-001
 title: PowerShell Security Audit Framework — Endpoint Discovery Design
 domain: systems-architecture
 source_format: Text specification (compliance control IDs + scope description)
-target_orchestrator: Codex (via Claude Code Agent dispatch — subagent_type="codex:codex-rescue")
+target_orchestrator: Claude (authoring) → Codex (review against smokin-knowledge PS hard rules)
 downstream_consumer: Principal Systems Engineer / SRE
 version: 1.0.0
 last_updated: 2026-06-05
