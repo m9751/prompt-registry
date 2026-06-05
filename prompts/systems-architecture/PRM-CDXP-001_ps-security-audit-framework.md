@@ -13,9 +13,15 @@ use_for: Design a non-remediating PowerShell endpoint discovery script for audit
 
 ## Overview
 
-Produces a highly detailed engineering design specification for a read-only PowerShell endpoint discovery script. Grounded in the smokin-knowledge PowerShell domain (5 hard rules + Q-series reference files). Covers Q16 (AppControl/CLM), Q39 (SecurityPolicyDsc), Q40 (AuditPolicy/telemetry), and Q44–Q47 (JEA).
+**What this is:** A saved set of instructions for building a PowerShell security audit script.
 
-This prompt is dispatched to Codex via Claude Code Agent dispatch. *Registry JSON appends a feedback block after the primary output — score it after reviewing Codex's output, not any self-score Codex may emit.*
+**What you get when you run it:** A detailed plan describing how to build that script — what it should check, how it should check it, and what it should report.
+
+**What the script does (once built):** Runs on a Windows machine and checks whether PowerShell is locked down correctly — things like "is application control on?", "is logging actually working?", "are the admin-only PowerShell endpoints locked down?". It never changes anything. Read-only.
+
+**How to use this brief:** Tell Claude "run PRM-CDXP-001". Claude writes the plan. An engineer then builds the script from the plan.
+
+**Technical scope:** Covers Q16 (application control / constrained language mode), Q39 (core OS security policy), Q40 (audit policy / telemetry), and Q44–Q47 (JEA endpoint discovery). Grounded in smokin-knowledge PowerShell domain hard rules.
 
 ## Prompt
 
