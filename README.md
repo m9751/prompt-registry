@@ -41,6 +41,7 @@ curl -s https://m9751.github.io/prompt-registry/prompts_latest.json | jq '.promp
 | ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `PRM-NBLM-002` | [Sequential Machine-Optimized Extractor](prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md) | Extract structured JSON data from a slide deck for app ingestion | PPTX / PDF | Long-Context LLMs | `1.0.0` | [View File](prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md) |
+| `PRM-VISION-001` | [Presentation Visual Layout and Relationship to Markdown Extractor](prompts/ai-engineering/PRM-VISION-001_presentation-to-markdown.md) | Extract literal text, implied icon relationships, and layout structures from presentation screenshots into clean Markdown. | PNG / JPEG | Multimodal LLM (Vision-capable) | `1.0.0` | [View File](prompts/ai-engineering/PRM-VISION-001_presentation-to-markdown.md) |
 
 ### 🛠️ Systems Architecture
 | ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
