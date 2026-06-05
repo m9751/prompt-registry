@@ -300,10 +300,12 @@ def generate_domains_catalog(prompts: list[dict]) -> None:
         "presentation",
     ]
 
-    # Warn if any compiled domain is not in domain_order (would be silently omitted)
-    for discovered in counts:
-        if discovered not in domain_order:
-            print(f"  WARNING: domain '{discovered}' has compiled prompts but is not in domain_order — add it to generate_domains_catalog()", file=sys.stderr)
+    # Hard-fail if any compiled domain is not in domain_order — prevents silent omission
+    unknown = [d for d in counts if d not in domain_order]
+    if unknown:
+        for d in unknown:
+            print(f"  ERROR: domain '{d}' has compiled prompts but is not in domain_order — add it to generate_domains_catalog() AND AGENTS.md enum", file=sys.stderr)
+        sys.exit(1)
 
     domains = []
     for domain_name in domain_order:

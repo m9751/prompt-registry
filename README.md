@@ -43,6 +43,11 @@ curl -s https://m9751.github.io/prompt-registry/prompts_latest.json | jq '.promp
 | `PRM-MMLM-006` | [Presentation Slide Visual and Textual Markdown Extractor](prompts/ai-engineering/PRM-MMLM-006_presentation-markdown-extractor.md) | Analyzing presentation screenshots to extract literal text hierarchies alongside deep visual-narrative interpretations into clean Markdown. | PNG / JPG | Multimodal LLM (e.g., GPT-4o, Claude 3.5 Sonnet) | `1.0.1` | [View File](prompts/ai-engineering/PRM-MMLM-006_presentation-markdown-extractor.md) |
 | `PRM-NBLM-002` | [Sequential Machine-Optimized Extractor](prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md) | Extract structured JSON data from a slide deck for app ingestion | PPTX / PDF | Long-Context LLMs | `1.0.0` | [View File](prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md) |
 
+### 🎨 Presentation
+| ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `PRM-PRES-001` | [HTML Slide-Ready Presentation Builder](prompts/presentation/PRM-PRES-001_html-slide-ready-presentation-builder.md) | Build a branded HTML slide deck + Google Apps Script from a structured content brief | Freeform content brief | Claude (Claude Code / Advanced Chat) | `1.0.0` | [View File](prompts/presentation/PRM-PRES-001_html-slide-ready-presentation-builder.md) |
+
 ### 🛠️ Systems Architecture
 | ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |

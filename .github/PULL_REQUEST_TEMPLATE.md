@@ -52,6 +52,7 @@
 - [ ] Spot-checked: opened `dist/prompts_latest.json`, confirmed this prompt's `prompt_text` ends with the feedback footer (`Score this prompt: 1 / 2 / 3`)
 - [ ] `dist/prompts_latest.json` included in this PR
 - [ ] README catalog auto-regenerated (no manual edits to the catalog section)
+- [ ] **If adding a new domain:** added domain to `domain_order` in `compile_prompts.py`, `domain_labels` dict, `AGENTS.md` enum list, and `prompt_schema.json` enum — compiler will hard-fail CI if any of these are missing
 - [ ] `version` field incremented in frontmatter per SemVer rules
 - [ ] `last_updated` date set to today
 
