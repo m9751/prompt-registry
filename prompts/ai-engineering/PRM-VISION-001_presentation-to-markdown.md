@@ -5,13 +5,13 @@ domain: ai-engineering
 source_format: PNG / JPEG
 target_orchestrator: Multimodal LLM (Vision-capable)
 downstream_consumer: Human (copy-paste) / Markdown Knowledge Base
-version: 1.0.0
-last_updated: 2026-06-04
+version: 1.0.1
+last_updated: 2026-06-05
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/ai-engineering/PRM-VISION-001_presentation-to-markdown.md
 use_for: Extract literal text, implied icon relationships, and layout structures from presentation screenshots into clean Markdown.
 ---
 
-> *Registry JSON appends a feedback block after the primary output; respond to it after completing the mandatory checklist.*
+> *Registry JSON appends a feedback block after the primary output; respond to it after delivering the Markdown extraction.*
 
 
 ```
