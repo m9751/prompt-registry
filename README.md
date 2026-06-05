@@ -46,6 +46,7 @@ curl -s https://m9751.github.io/prompt-registry/prompts_latest.json | jq '.promp
 ### 🛠️ Systems Architecture
 | ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `PRM-CDXP-001` | [PowerShell Security Audit Framework — Endpoint Discovery Design](prompts/systems-architecture/PRM-CDXP-001_ps-security-audit-framework.md) | Design a non-remediating PowerShell endpoint discovery script for auditing security posture across application control/CLM, security policy, audit policy/telemetry, and JEA endpoint configuration | Text specification (compliance control IDs + scope description) | Codex (via Claude Code Agent dispatch — subagent_type="codex:codex-rescue") | `1.0.0` | [View File](prompts/systems-architecture/PRM-CDXP-001_ps-security-audit-framework.md) |
 | `PRM-NBLM-003` | [HTML-Aware Slide Parser](prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md) | Transform an HTML slide deck into clean XML for downstream parsing | HTML DOM | NotebookLM / Claude | `1.0.0` | [View File](prompts/systems-architecture/PRM-NBLM-003_html-aware-slide-parser.md) |
 | `PRM-NBLM-004` | [Architecture Semantic Compressor](prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md) | Extract system boundaries, data flows, and gaps from an HTML architecture deck | HTML DOM | NotebookLM / Long-Context LLMs | `1.1.0` | [View File](prompts/systems-architecture/PRM-NBLM-004_architecture-semantic-compressor.md) |
 
