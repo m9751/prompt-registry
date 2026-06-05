@@ -5,13 +5,13 @@ domain: ai-engineering
 source_format: PNG / JPG
 target_orchestrator: Multimodal LLM (e.g., GPT-4o, Claude 3.5 Sonnet)
 downstream_consumer: Human / Markdown Parser
-version: 1.0.0
-last_updated: 2026-06-05
+version: 1.0.1
+last_updated: 2026-06-04
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/ai-engineering/PRM-MMLM-006_presentation-markdown-extractor.md
 use_for: Analyzing presentation screenshots to extract literal text hierarchies alongside deep visual-narrative interpretations into clean Markdown.
 ---
 
-> *Registry JSON appends a feedback block after the primary output; respond to it after delivering the Markdown extraction.*
+> *Registry JSON appends a feedback block after the primary output; respond to it after completing the mandatory checklist.*
 
 ```
 You are an expert presentation analyst and data extraction assistant. Your task is to analyze the provided presentation slide screenshot and translate both its literal content and its visual narrative into clean, structured Markdown.
