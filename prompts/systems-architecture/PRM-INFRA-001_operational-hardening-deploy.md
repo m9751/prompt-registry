@@ -5,7 +5,7 @@ domain: systems-architecture
 source_format: Code files + ADR + deploy plan
 target_orchestrator: Claude Code
 downstream_consumer: Human (review then approve)
-version: 2.2.0
+version: 2.3.0
 last_updated: 2026-06-07
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-001_operational-hardening-deploy.md
 use_for: Review code for correctness then execute a hardened deploy using the Phased Build Protocol
@@ -22,16 +22,29 @@ You are executing a two-stage operational hardening sequence before deploying co
 
 ## Step 0 — Gather Context
 
-Ask the user two questions, one at a time:
-1. What are we deploying? (project name or description)
-2. Where is it going? (deploy target — if unknown, list the options you see in the repo)
+Before asking anything, do a silent context read:
+- Run `git log --oneline -5` and `git branch --show-current` to identify the active project
+- Run `gh pr list --state open --limit 3` to see open PRs
 
-For anything the user doesn't know, find it yourself:
-- Changed files: First verify a clean working tree: run `git status --porcelain`. If any staged, unstaged, or untracked files exist, **HALT** — tell the user: "Working tree is not clean. Commit or stash all changes before deploying." Do not proceed until the working tree is clean. Then ask the user: "What is the deploy base branch or ref?" (e.g., `main`, `release/1.4`, a specific commit SHA). Validate the user-provided value before use: must match `^(?!-)[A-Za-z0-9._/-]+$` (no leading `-`, no spaces, no metacharacters) AND must resolve to a real commit (`git rev-parse --verify --quiet "$DEPLOY_BASE^{commit}"` — halt if this returns non-zero). Reject anything that fails either check. Run `git fetch origin` then `BASE=$(git merge-base HEAD "$DEPLOY_BASE") && git diff --name-only "$BASE" HEAD` (quoted, never raw-interpolated). If merge-base fails, **HALT** — do not fall back to any default. There is no safe default base for release/hotfix branches. Tell the user: "Cannot establish deploy base — provide explicit base ref (branch name or SHA)." If the user provides `main`, record both `DEPLOY_BASE=origin/main` (for git diff) and `DEPLOY_BASE_BRANCH=main` (for PR API assertions, without remote prefix). If the user provides a release branch like `release/1.4`, record both accordingly. Never infer the base — always require explicit confirmation. Also record the current HEAD commit as `DEPLOY_SHA=$(git rev-parse HEAD)` — this is used in Step 1 verification. If merge-base fails after fetch, **HALT** — ask the user to provide the explicit list of files being deployed.
-- ADR: check `~/repos/claude-config/decisions/` for the most recent ADR matching the project name
-- Repo path: infer from project name
+Then present your findings and ask for confirmation — do NOT ask blank questions:
 
-If you cannot determine a required value after looking, say so explicitly — do not proceed with assumed values.
+**Project name:** State what you found (e.g., "I see we're on branch `feat/hooks-memory-skills-design` in `smokin-os` — is that what we're deploying?"). Only ask for correction if ambiguous.
+
+**Deploy target:** Reason from repository state using GitHub branch protection best practices:
+- If there's an open PR against `main`: suggest "merge this PR to main" as the deploy action
+- If on a feature branch with no open PR: suggest "open a PR against main and merge"
+- If branch protection is active (`gh api repos/<owner>/<repo>/branches/main --jq '.protection.required_status_checks'`): note that required checks must pass
+- If on a release/hotfix branch: suggest the appropriate release base
+
+State your recommendation and ask to confirm. Do NOT ask "where is it going?" without offering your best answer first.
+
+After confirmation:
+- Verify clean working tree: `git status --porcelain`. If any staged, unstaged, or untracked files exist, **HALT** — "Working tree is not clean. Commit or stash all changes before deploying."
+- Validate any user-provided deploy base ref: must match `^(?!-)[A-Za-z0-9._/-]+$` AND resolve to a real commit (`git rev-parse --verify --quiet "$DEPLOY_BASE^{commit}"`). Reject anything that fails either check.
+- Run `git fetch origin` then `BASE=$(git merge-base HEAD "$DEPLOY_BASE") && git diff --name-only "$BASE" HEAD` (quoted, never raw-interpolated).
+- If merge-base fails, **HALT** — "Cannot establish deploy base. Provide explicit base ref." Never fall back silently.
+- Record `DEPLOY_BASE` (git ref, e.g. `origin/main`), `DEPLOY_BASE_BRANCH` (branch name without remote prefix, e.g. `main`), and `DEPLOY_SHA=$(git rev-parse HEAD)`.
+- Check `~/repos/claude-config/decisions/` for the most recent ADR matching the project name.
 
 ## Step 0.5 — Classify Change Risk
 
