@@ -5,7 +5,7 @@ domain: systems-architecture
 source_format: Code files + ADR + deploy plan
 target_orchestrator: Claude Code
 downstream_consumer: Human (review then approve)
-version: 2.3.0
+version: 2.4.0
 last_updated: 2026-06-07
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-001_operational-hardening-deploy.md
 use_for: Review code for correctness then execute a hardened deploy using the Phased Build Protocol
@@ -31,12 +31,12 @@ Then present your findings and ask for confirmation — do NOT ask blank questio
 **Project name:** State what you found (e.g., "I see we're on branch `feat/hooks-memory-skills-design` in `smokin-os` — is that what we're deploying?"). Only ask for correction if ambiguous.
 
 **Deploy target:** Reason from repository state using GitHub branch protection best practices:
-- If there's an open PR against `main`: suggest "merge this PR to main" as the deploy action
-- If on a feature branch with no open PR: suggest "open a PR against main and merge"
+- Find the PR for THIS branch: `gh pr list --head $(git branch --show-current) --state open --json number,baseRefName,headRefOid` — assert exactly one result. If zero results: suggest creating a PR. If multiple: halt and ask user to specify which PR.
+- Verify the PR's `headRefOid` matches `DEPLOY_SHA` (or is a direct ancestor). If it doesn't match, warn: "PR head has diverged from local DEPLOY_SHA — rebase or force-push may be needed before deploy."
 - If branch protection is active (`gh api repos/<owner>/<repo>/branches/main --jq '.protection.required_status_checks'`): note that required checks must pass
 - If on a release/hotfix branch: suggest the appropriate release base
 
-State your recommendation and ask to confirm. Do NOT ask "where is it going?" without offering your best answer first.
+State your recommendation and ask to confirm. Do NOT suggest merging a PR without first verifying it corresponds to the current branch and commit.
 
 After confirmation:
 - Verify clean working tree: `git status --porcelain`. If any staged, unstaged, or untracked files exist, **HALT** — "Working tree is not clean. Commit or stash all changes before deploying."
@@ -71,7 +71,8 @@ Before any review or deploy action, declare a Verification Contract for this dep
 **SUCCESS EVIDENCE** — specific, independent assertions that prove the deploy is serving correctly. These must be verifiable WITHOUT trusting the deploy tool's own success report. Examples by deploy type:
 
 For **PR-only / docs deploys** (Markdown, spec files, no code execution):
-- Content integrity: `gh api repos/<owner>/<repo>/contents/<path>?ref=<DEPLOY_BASE_BRANCH>` — decode the base64 content and assert that a known unique string from the deployed file is present. Do NOT compare blob SHAs — squash/rebase merges rewrite blob SHAs even when content is correct, which causes false failures. Use a semantic content check (grep for a known identifier, section header, or version string that would only be present in the correct version) instead of SHA equality.
+- Commit lineage: `gh pr view <PR#> --json mergeCommit,headRefOid` — assert `headRefOid` matches or is an ancestor of `DEPLOY_SHA`. If a squash/rebase merge occurred, the merged commit SHA will differ from `DEPLOY_SHA` — in that case, assert the PR's `mergeCommit.oid` is present in the target branch's history: `git log --oneline <DEPLOY_BASE_BRANCH> | grep <merge-commit-short-sha>`. If commit lineage cannot be proven, verification FAILS.
+- Content integrity: `gh api repos/<owner>/<repo>/contents/<path>?ref=<DEPLOY_BASE_BRANCH>` — decode the base64 content and assert that a known unique string from the deployed file is present (grep for a version string, section header, or identifier that would only be present in the correct version). Use semantic content check, not blob SHA equality.
 - PR merged to correct base: `gh pr view <PR#> --json state,baseRefName` — assert `state="MERGED"` and `baseRefName="<DEPLOY_BASE_BRANCH>"` (the branch name without remote prefix — e.g., `main` not `origin/main`)
 - No conflict markers: `git show "$DEPLOY_SHA":<path> | grep -c "<<<<<<<"` — assert 0 (use DEPLOY_SHA, never HEAD)
 - Pointer string present in index file (if applicable): decode content, grep for expected reference
