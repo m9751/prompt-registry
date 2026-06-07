@@ -96,7 +96,28 @@ If modifying an existing prompt, increment the `version` field in frontmatter:
 | New section or structural change | Minor | `1.0.0 → 1.1.0` |
 | Complete rewrite or breaking change | Major | `1.0.0 → 2.0.0` |
 
-### 7. Commit and open a PR
+### 7. Log to Supabase
+
+After the PR merges, log the prompt to `build.deliverables` on smokin-ops:
+
+```python
+# Via Claude Code MCP (execute_sql, project_id: xuvdcygqyuajtlpavafr)
+INSERT INTO build.deliverables (title, type, url, description, source, trigger_phrase, status, build_state, build_state_changed_at, metadata)
+VALUES (
+  'PRM-XXX-NNN Title',
+  'prompt',
+  'https://m9751.github.io/prompt-registry/prompts_latest.json',
+  'use_for value from frontmatter',
+  'prompt-registry',
+  'PRM-XXX-NNN',
+  'shipped', 'complete', now(),
+  jsonb_build_object('version', '1.0.0', 'prompt_id', 'PRM-XXX-NNN')
+);
+```
+
+This keeps the prompt findable via `/find` and the territory deliverables audit.
+
+### 8. Commit and open a PR
 
 ```bash
 git add prompts/your-domain/your-file.md dist/ README.md

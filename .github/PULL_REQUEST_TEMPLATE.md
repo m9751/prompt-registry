@@ -55,5 +55,6 @@
 - [ ] **If adding a new domain:** added domain to `domain_order` in `compile_prompts.py`, `domain_labels` dict, `AGENTS.md` enum list, and `prompt_schema.json` enum — compiler will hard-fail CI if any of these are missing
 - [ ] `version` field incremented in frontmatter per SemVer rules
 - [ ] `last_updated` date set to today
+- [ ] Prompt logged to `build.deliverables` on smokin-ops Supabase (`project_id: xuvdcygqyuajtlpavafr`) with `source='prompt-registry'` and `prompt_id` in metadata — use `execute_sql` after merge
 
 > **Note for reviewers:** JSON consumers automatically receive the feedback footer appended to every `prompt_text`. This is injected by the compiler and is not present in the `.md` source file.
