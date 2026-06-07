@@ -5,7 +5,7 @@ domain: systems-architecture
 source_format: Code files + ADR + deploy plan
 target_orchestrator: Claude Code
 downstream_consumer: Human (review then approve)
-version: 2.5.0
+version: 2.6.0
 last_updated: 2026-06-07
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-001_operational-hardening-deploy.md
 use_for: Review code for correctness then execute a hardened deploy using the Phased Build Protocol
@@ -32,7 +32,7 @@ Then present your findings and ask for confirmation — do NOT ask blank questio
 
 **Deploy target:** First record `DEPLOY_SHA=$(git rev-parse HEAD)` — this must be set before any PR comparison. Then reason from repository state using GitHub branch protection best practices:
 - Find the PR for THIS branch: `gh pr list --head $(git branch --show-current) --state open --json number,baseRefName,headRefOid` — assert exactly one result. If zero results: suggest creating a PR. If multiple: halt and ask user to specify which PR.
-- Verify the PR's `headRefOid` (full 40-char OID) matches `DEPLOY_SHA` exactly, OR run `git merge-base --is-ancestor "$DEPLOY_SHA" "<headRefOid>"` to confirm DEPLOY_SHA is an ancestor. If neither check passes, warn: "PR head has diverged from local DEPLOY_SHA — rebase or force-push may be needed before deploy."
+- Verify the PR's `headRefOid` (full 40-char OID) matches `DEPLOY_SHA` exactly, OR run `git merge-base --is-ancestor "$DEPLOY_SHA" "<headRefOid>"` to confirm DEPLOY_SHA is an ancestor. If neither check passes, **HALT** — "PR head has diverged from local DEPLOY_SHA. Rebase or force-push to sync before deploying." Do NOT warn and continue — diverged commits bypass the review guarantee.
 - If branch protection is active (`gh api repos/<owner>/<repo>/branches/main --jq '.protection.required_status_checks'`): note that required checks must pass
 - If on a release/hotfix branch: suggest the appropriate release base
 
@@ -43,7 +43,7 @@ After confirmation:
 - Validate any user-provided deploy base ref: must match `^(?!-)[A-Za-z0-9._/-]+$` AND resolve to a real commit (`git rev-parse --verify --quiet "$DEPLOY_BASE^{commit}"`). Reject anything that fails either check.
 - Run `git fetch origin` then `BASE=$(git merge-base HEAD "$DEPLOY_BASE") && git diff --name-only "$BASE" HEAD` (quoted, never raw-interpolated).
 - If merge-base fails, **HALT** — "Cannot establish deploy base. Provide explicit base ref." Never fall back silently.
-- Record `DEPLOY_BASE` (git ref, e.g. `origin/main`) and `DEPLOY_BASE_BRANCH` (branch name without remote prefix, e.g. `main`). DEPLOY_SHA was already set during deploy-target reasoning above.
+- Record `DEPLOY_BASE` (git ref, e.g. `origin/main`), `DEPLOY_BASE_BRANCH` (branch name without remote prefix, e.g. `main`), and `DEPLOY_BASE_OID=$(git rev-parse origin/"$DEPLOY_BASE_BRANCH")` — the immutable fetched OID of the target branch tip. DEPLOY_SHA was already set during deploy-target reasoning above. All downstream lineage and content verification must use `DEPLOY_BASE_OID`, not the local branch name, to avoid stale-ref false results.
 - Check `~/repos/claude-config/decisions/` for the most recent ADR matching the project name.
 
 ## Step 0.5 — Classify Change Risk
@@ -74,7 +74,7 @@ For **PR-only / docs deploys** (Markdown, spec files, no code execution):
 - Commit lineage: `gh pr view <PR#> --json mergeCommit,headRefOid` — use the full 40-char OIDs from this output. For direct merges: assert `headRefOid == DEPLOY_SHA`. For squash/rebase merges where SHA differs: assert the merge commit is an ancestor of the target branch using `git merge-base --is-ancestor "<mergeCommit.oid>" <DEPLOY_BASE_BRANCH>` — exit code 0 = ancestor confirmed. Never use short SHAs or grep for lineage. If commit lineage cannot be proven via ancestry check, verification FAILS.
 - Content integrity: `gh api repos/<owner>/<repo>/contents/<path>?ref=<DEPLOY_BASE_BRANCH>` — decode the base64 content and assert that a known unique string from the deployed file is present (grep for a version string, section header, or identifier that would only be present in the correct version). Use semantic content check, not blob SHA equality.
 - PR merged to correct base: `gh pr view <PR#> --json state,baseRefName` — assert `state="MERGED"` and `baseRefName="<DEPLOY_BASE_BRANCH>"` (the branch name without remote prefix — e.g., `main` not `origin/main`)
-- No conflict markers: `git show "$DEPLOY_SHA":<path> | grep -c "<<<<<<<"` — assert 0 (use DEPLOY_SHA, never HEAD)
+- No conflict markers on deployed content: `git show "$DEPLOY_BASE_OID":<path> | grep -c "<<<<<<<"` — assert 0. Use the fetched target branch OID, not DEPLOY_SHA, to check what was actually deployed, not what was committed locally.
 - Pointer string present in index file (if applicable): decode content, grep for expected reference
 
 For **app deploys** (Vercel, CloudHub, Supabase, GitHub Pages):
