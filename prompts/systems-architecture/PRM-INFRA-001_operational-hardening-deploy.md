@@ -5,7 +5,7 @@ domain: systems-architecture
 source_format: Code files + ADR + deploy plan
 target_orchestrator: Claude Code
 downstream_consumer: Human (review then approve)
-version: 2.4.0
+version: 2.5.0
 last_updated: 2026-06-07
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-001_operational-hardening-deploy.md
 use_for: Review code for correctness then execute a hardened deploy using the Phased Build Protocol
@@ -30,9 +30,9 @@ Then present your findings and ask for confirmation — do NOT ask blank questio
 
 **Project name:** State what you found (e.g., "I see we're on branch `feat/hooks-memory-skills-design` in `smokin-os` — is that what we're deploying?"). Only ask for correction if ambiguous.
 
-**Deploy target:** Reason from repository state using GitHub branch protection best practices:
+**Deploy target:** First record `DEPLOY_SHA=$(git rev-parse HEAD)` — this must be set before any PR comparison. Then reason from repository state using GitHub branch protection best practices:
 - Find the PR for THIS branch: `gh pr list --head $(git branch --show-current) --state open --json number,baseRefName,headRefOid` — assert exactly one result. If zero results: suggest creating a PR. If multiple: halt and ask user to specify which PR.
-- Verify the PR's `headRefOid` matches `DEPLOY_SHA` (or is a direct ancestor). If it doesn't match, warn: "PR head has diverged from local DEPLOY_SHA — rebase or force-push may be needed before deploy."
+- Verify the PR's `headRefOid` (full 40-char OID) matches `DEPLOY_SHA` exactly, OR run `git merge-base --is-ancestor "$DEPLOY_SHA" "<headRefOid>"` to confirm DEPLOY_SHA is an ancestor. If neither check passes, warn: "PR head has diverged from local DEPLOY_SHA — rebase or force-push may be needed before deploy."
 - If branch protection is active (`gh api repos/<owner>/<repo>/branches/main --jq '.protection.required_status_checks'`): note that required checks must pass
 - If on a release/hotfix branch: suggest the appropriate release base
 
@@ -43,7 +43,7 @@ After confirmation:
 - Validate any user-provided deploy base ref: must match `^(?!-)[A-Za-z0-9._/-]+$` AND resolve to a real commit (`git rev-parse --verify --quiet "$DEPLOY_BASE^{commit}"`). Reject anything that fails either check.
 - Run `git fetch origin` then `BASE=$(git merge-base HEAD "$DEPLOY_BASE") && git diff --name-only "$BASE" HEAD` (quoted, never raw-interpolated).
 - If merge-base fails, **HALT** — "Cannot establish deploy base. Provide explicit base ref." Never fall back silently.
-- Record `DEPLOY_BASE` (git ref, e.g. `origin/main`), `DEPLOY_BASE_BRANCH` (branch name without remote prefix, e.g. `main`), and `DEPLOY_SHA=$(git rev-parse HEAD)`.
+- Record `DEPLOY_BASE` (git ref, e.g. `origin/main`) and `DEPLOY_BASE_BRANCH` (branch name without remote prefix, e.g. `main`). DEPLOY_SHA was already set during deploy-target reasoning above.
 - Check `~/repos/claude-config/decisions/` for the most recent ADR matching the project name.
 
 ## Step 0.5 — Classify Change Risk
@@ -71,7 +71,7 @@ Before any review or deploy action, declare a Verification Contract for this dep
 **SUCCESS EVIDENCE** — specific, independent assertions that prove the deploy is serving correctly. These must be verifiable WITHOUT trusting the deploy tool's own success report. Examples by deploy type:
 
 For **PR-only / docs deploys** (Markdown, spec files, no code execution):
-- Commit lineage: `gh pr view <PR#> --json mergeCommit,headRefOid` — assert `headRefOid` matches or is an ancestor of `DEPLOY_SHA`. If a squash/rebase merge occurred, the merged commit SHA will differ from `DEPLOY_SHA` — in that case, assert the PR's `mergeCommit.oid` is present in the target branch's history: `git log --oneline <DEPLOY_BASE_BRANCH> | grep <merge-commit-short-sha>`. If commit lineage cannot be proven, verification FAILS.
+- Commit lineage: `gh pr view <PR#> --json mergeCommit,headRefOid` — use the full 40-char OIDs from this output. For direct merges: assert `headRefOid == DEPLOY_SHA`. For squash/rebase merges where SHA differs: assert the merge commit is an ancestor of the target branch using `git merge-base --is-ancestor "<mergeCommit.oid>" <DEPLOY_BASE_BRANCH>` — exit code 0 = ancestor confirmed. Never use short SHAs or grep for lineage. If commit lineage cannot be proven via ancestry check, verification FAILS.
 - Content integrity: `gh api repos/<owner>/<repo>/contents/<path>?ref=<DEPLOY_BASE_BRANCH>` — decode the base64 content and assert that a known unique string from the deployed file is present (grep for a version string, section header, or identifier that would only be present in the correct version). Use semantic content check, not blob SHA equality.
 - PR merged to correct base: `gh pr view <PR#> --json state,baseRefName` — assert `state="MERGED"` and `baseRefName="<DEPLOY_BASE_BRANCH>"` (the branch name without remote prefix — e.g., `main` not `origin/main`)
 - No conflict markers: `git show "$DEPLOY_SHA":<path> | grep -c "<<<<<<<"` — assert 0 (use DEPLOY_SHA, never HEAD)
@@ -130,6 +130,7 @@ If a required reviewer subagent is unavailable or the file type has no defined r
 - **LOW-risk change**: proceed with general-purpose review + flag explicitly: "FILE X reviewed by general-purpose fallback — human signoff required before deploy." Operator must acknowledge before Stage 2.
 - **MODERATE-risk change**: general-purpose fallback is permitted but requires: (a) explicit human signoff from someone familiar with the affected system, AND (b) a written fallback checklist (what would a specialist reviewer have checked — list at least 3 items relevant to this file type). Operator must confirm both before Stage 2.
 - **HIGH-risk change** (DB migration, auth/security surface, infra manifest that gates production): missing specialist review is a **NEEDS-FIXES** block. Do not proceed. No waiver or PR comment overrides this. The only path forward is: (a) obtain the specialist review, or (b) reclassify the change as LOW/MODERATE with documented justification that the HIGH-risk criteria do not actually apply.
+- **Operational Markdown/spec files** (prompt files, runbooks, verification contracts, deploy procedures — classified HIGH by Step 0.5): use this checklist as the specialist review path: (1) are all success criteria independently observable (not self-reported)? (2) are all failure paths enumerated with explicit outcomes? (3) does the prompt's risk classification correctly account for its own operational impact? (4) are there any self-referential loops (e.g., this prompt governs its own deploy)? A human must sign off on all four items. This is the only approved path for deploying operational Markdown changes with no external specialist available.
 
 Aggregate into worst-of verdict:
 - SHIP (0 HIGH, 0 MED, ≤2 LOW) → proceed to Stage 2
