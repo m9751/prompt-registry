@@ -12,9 +12,11 @@ not_when: The output is a sales or executive presentation — use sales-architec
 
 - `NBLM` — NotebookLM / long-context LLM targets
 - `CDXP` — Codex dispatch prompts (dispatched via Claude Code Agent tool, subagent_type="codex:codex-rescue")
+- `INFRA` — Infrastructure and deploy hardening prompts (Claude Code orchestration)
 
 ## Prompts in this domain
 
 - `PRM-NBLM-003` — HTML-Aware Slide Parser
 - `PRM-NBLM-004` — Architecture Semantic Compressor
 - `PRM-CDXP-001` — PowerShell Security Audit Framework — Endpoint Discovery Design
+- `PRM-INFRA-001` — Operational Hardening Deploy
