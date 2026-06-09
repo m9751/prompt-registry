@@ -48,7 +48,7 @@ Living record while the prompt is refined. **Not dispatch-ready** until ship gat
 - §14 Drift delta when `<prior_audit_result>` injected (resolved/regressed/metric_delta/verdict_change).
 - Optional variable: prior_audit_result (§13 JSON from previous run).
 
-| **Status** | Calibrated (v1.7.1) — M9 + github_reviewer_supplement required for validated verdict |
+| **Status** | Calibrated (v1.7.2) — M9 + github_reviewer_supplement required for validated verdict |
 
 ## Version history
 
@@ -192,3 +192,10 @@ code-repo ✓, B-routing n/a ✓, .env n/a ✓, AERR 68 Partial — disambiguati
 - Panel re-run with supplements: 12/13/14 artifacts on Desktop calibration panel.
 - Ship gate: discriminant PASS, validated predictive PASS, consistency PASS.
 - Status → **calibrated** when M9 (+ github supplement when >3 workflows) collected.
+
+### v1.7.2 ship gate — 2026-06-09
+- PR #36 merged; Pages `1.7.2`.
+- M2 scope fix validated: claude-config M2 1→0, structural No→Partial (floor 50), calibration_mismatch→proxy_gap.
+- prompt-registry: structural Yes + M9 pass → validated Yes, aligned.
+- Panel artifacts: `15-m9-prompt-registry-v172.md`, `16-v172-claude-config.md`, `17-v172-prompt-registry.md`.
+- Ship gate: discriminant PASS, structural + validated predictive PASS, consistency PASS.
