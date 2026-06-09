@@ -10,9 +10,16 @@ Living record while the prompt is refined. **Not dispatch-ready** until ship gat
 
 | Field | Value |
 |-------|-------|
-| **Version** | `1.6.3` |
+| **Version** | `1.7.0` |
 | **Source** | `PRM-CDXP-002_repo-structure-audit.md` |
 | **Compiled** | `dist/prompts_latest.json` |
+
+### v1.7.0 — 2026-06-09 (M9 calibration fix — claude-config false negative)
+- **Tracer A M1 exclusions:** Makefile-as-front-door (build not in README OK); verify split when M2=0; missing AGENTS.md when CLAUDE.md exists (legacy layout).
+- **makefile_front_door:** reduced scavenger_penalty (M1×3 cap 12); +5 sandbox-blocked bonus; execution_truth_floor=50 when M2=0 and M7≥1.
+- **No gate:** documented build path includes Makefile/justfile; floor prevents AERR<50 No alone on makefile front door.
+- **M9 reconciliation:** calibration_status enum; validated_verdict Partial on No+pass; §13 adds makefile_front_door, aerr_raw, execution_truth_floor, validated_verdict, calibration_status.
+- **Calibration panel:** claude-config v1.6.3 structural No → validated Partial (calibration_mismatch); v1.7.0 target structural Partial.
 
 ### v1.6.3 — 2026-06-08 (registry feedback wire)
 - Overview: two-artifact rule + registry feedback (CONTRIBUTING § Prompt Feedback).
@@ -30,7 +37,7 @@ Living record while the prompt is refined. **Not dispatch-ready** until ship gat
 - §14 Drift delta when `<prior_audit_result>` injected (resolved/regressed/metric_delta/verdict_change).
 - Optional variable: prior_audit_result (§13 JSON from previous run).
 
-| **Status** | Iterating — live-test panel (v1.5.1) |
+| **Status** | Iterating — M9 calibration panel complete; v1.7.0 ships calibration fix |
 
 ## Version history
 
@@ -87,7 +94,7 @@ Living record while the prompt is refined. **Not dispatch-ready** until ship gat
 
 ## Open backlog
 
-- [ ] Calibration panel: 3–5 repos + paired fixed task for M9
+- [x] Calibration panel: 3-repo panel + M9 (2026-06-09) — claude-config calibration_mismatch drove v1.7.0
 - [ ] Extend playbook Steps 4e/4f/1g/5b (build/CI/.env) per Desktop analysis
 - [ ] Governance re-review after measurement add
 - [ ] Tune weights when calibration_mismatch / proxy_gap patterns emerge
