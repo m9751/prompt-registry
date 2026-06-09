@@ -43,7 +43,7 @@ Living record while the prompt is refined. **Not dispatch-ready** until ship gat
 - §14 Drift delta when `<prior_audit_result>` injected (resolved/regressed/metric_delta/verdict_change).
 - Optional variable: prior_audit_result (§13 JSON from previous run).
 
-| **Status** | Iterating — M9 calibration panel complete; v1.7.0 ships calibration fix |
+| **Status** | Calibrated (v1.7.1) — M9 + github_reviewer_supplement required for validated verdict |
 
 ## Version history
 
@@ -181,3 +181,9 @@ code-repo ✓, B-routing n/a ✓, .env n/a ✓, AERR 68 Partial — disambiguati
 - severity_bands: P0/P1/P2 hygiene rules (.gitignore, LICENSE = P2 never P0).
 - §13 validation: schema prm-cdxp-002-snapshot-v1, gap counts must reconcile, verdict enum Yes|Partial|No.
 
+
+### v1.7.1 ship gate — 2026-06-09
+- Workflow fixes: prompt-registry #34 (Rule 4), claude-config #310 (permissions).
+- Panel re-run with supplements: 12/13/14 artifacts on Desktop calibration panel.
+- Ship gate: discriminant PASS, validated predictive PASS, consistency PASS.
+- Status → **calibrated** when M9 (+ github supplement when >3 workflows) collected.
