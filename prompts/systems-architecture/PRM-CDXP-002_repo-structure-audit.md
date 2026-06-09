@@ -5,8 +5,8 @@ domain: systems-architecture
 source_format: Git repository (filesystem)
 target_orchestrator: Codex exec (read-only)
 downstream_consumer: Principal engineer / repo builder / agent onboarding
-version: 1.6.3
-last_updated: 2026-06-08
+version: 1.7.0
+last_updated: 2026-06-09
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-CDXP-002_repo-structure-audit.md
 use_for: Measure whether a repo enables reliable, consistent agent execution — structural readiness scorecard with AERR metrics, not business-logic review
 ---
@@ -223,6 +223,9 @@ Tracer A — Onboarding path (all repo types)
 - Does README or AGENTS.md document clone → orient → (optional install elsewhere) in order?
 - Count scavenger-hunt steps (split docs, undocumented env vars, Keychain/VPN/manual prerequisites).
 - **Do not count** a cross-repo install/activation pointer as scavenger when README boundary section explicitly declares runtime lives in another repo [OBSERVED].
+- **Do not count** build/install omission from README when root Makefile or justfile documents install/build/compile targets [OBSERVED] — Makefile is canonical front door per Tracer B source order.
+- **Do not count** verify/lint split between README and Makefile when Makefile defines verify/lint/test targets AND M2 = 0 (no conflicting canonical commands) — at most one scavenger step for doc fragmentation, not two.
+- **Do not count** missing root AGENTS.md when CLAUDE.md exists with agent onboarding (primary task + command list or NEVER block) [OBSERVED] — legacy layout; still score Agent onboarding smell = 1.
 
 Tracer B — Build truth (navigation-primary = false only)
 - Canonical build command: README, then Makefile/justfile, then CI (note conflicts).
@@ -248,7 +251,7 @@ Test placement — 0: no test dirs/scripts | 1: tests exist but undiscoverable |
 CI truth — 0: no CI | 1: CI exists but mismatches docs | 2: CI matches README/Makefile commands
 Change safety — 0: no guards | 1: manual checks only | 2: lint/test/pre-deploy scripts or CI gates
 Release path — 0: no release docs | 1: manual release documented | 2: scripted or CI release path
-Agent onboarding — 0: no AGENTS.md/CLAUDE.md | 1: agent docs exist, fragmented | 2: dedicated agent entry with commands
+Agent onboarding — 0: no AGENTS.md/CLAUDE.md | 1: agent docs exist, fragmented (CLAUDE.md without AGENTS.md = 1, not 0) | 2: dedicated agent entry with commands
 Dead weight — 0: generated artifacts committed | 1: some drift in tree | 2: clean tree, .gitignore enforced
 
 **Navigation-primary repos:** mark Deploy mirror, Test placement, CI truth, Release path, and **Dependency hygiene** as **n-a** when no runtime dependency surface exists (no lockfile, package manifest, or dependency docs required for repo operation) — exclude from M3 denominator. Score remaining five smells normally (max 10).
@@ -274,7 +277,7 @@ Compute **AERR** (Agent Execution Readiness Rating), 0–100. Every metric must 
 ### Raw metrics (record all)
 | ID | Metric | How to measure |
 |----|--------|----------------|
-| M1 | scavenger_hunt_count | Integer from Tracer A (split docs, undeclared env, manual prereqs each = 1) |
+| M1 | scavenger_hunt_count | Integer from Tracer A after exclusions (split docs, undeclared env, manual prereqs each = 1; Makefile-front-door and legacy CLAUDE.md rules apply) |
 | M2 | command_conflict_count | Integer: distinct canonical build commands across README / Makefile / CI |
 | M3 | smell_total | Sum of applicable smell scores (max 20; max 10 when navigation-primary with 5 smells n/a) |
 | M4 | tracer_b | pass \| fail \| sandbox-blocked \| not-attempted \| n-a |
@@ -301,6 +304,8 @@ Expected `<paired_task_result>` shape:
 - run2: (optional) same_commands yes|no, same_outcome yes|no
 - M9 mapping: pass = run1 success + no rescue + commands_from_docs; fail-with-rescue = fail or rescue or invented commands; inconsistent = run2 differs on commands or outcome; not-run = block absent
 
+Operator may inject `<paired_task_result>` from a separate writable M9 run (calibration panel) or post-hoc after read-only audit completes. When injected, compute validated_verdict and calibration_status per M9 reconciliation below and emit both in §10 and §13.
+
 Do NOT execute the paired task in this read-only audit. Record M9 only from injected results or not-run.
 
 ### Calibration protocol (operator — for metric tuning across repos)
@@ -311,18 +316,28 @@ Run on a 3–5 repo panel when validating this prompt:
 
 If predictive test fails for a metric, flag it in calibration_notes and do not treat that metric as validated.
 
+### Makefile front door (legacy code-repo calibration — v1.7.0)
+Set **makefile_front_door** = true when root Makefile or justfile exists with documented install OR build OR compile target AND verify OR lint OR test target [OBSERVED]. Record in §9 arithmetic.
+
 ### AERR formula (code/app/knowledge-wrapper — default)
 smell_pct = (M3 / 20) * 100
-scavenger_penalty = min(M1 * 5, 25)
+If makefile_front_door AND M2 = 0:
+  scavenger_penalty = min(M1 * 3, 12)
+Else:
+  scavenger_penalty = min(M1 * 5, 25)
 conflict_penalty = min(M2 * 10, 20)
 tracer_bonus = 0
   + 5 if M4 = pass
-  + 3 if M4 = sandbox-blocked AND canonical build command exists in docs/scripts
+  + 5 if M4 = sandbox-blocked AND makefile_front_door AND M2 = 0
+  + 3 if M4 = sandbox-blocked AND canonical build command exists in docs/scripts AND NOT (makefile_front_door AND M2 = 0)
   + 0 if M4 = fail or not-attempted
   + 5 if M5 = yes
   + 3 if M5 = n/a AND M6 >= 1
   + 0 if M5 = no
-AERR = clamp(0, 100, round(smell_pct - scavenger_penalty - conflict_penalty + tracer_bonus))
+AERR_raw = round(smell_pct - scavenger_penalty - conflict_penalty + tracer_bonus)
+execution_truth_floor = 50 when makefile_front_door AND M2 = 0 AND M4 in (pass, sandbox-blocked) AND M7 >= 1
+AERR = clamp(0, 100, max(AERR_raw, execution_truth_floor)) when execution_truth_floor applies; else clamp(0, 100, AERR_raw)
+Show makefile_front_door, AERR_raw, execution_truth_floor (or n/a), and final AERR in §9.
 
 ### AERR formula (navigation-primary — navigation mode)
 When navigation-primary flag is set, label score **navigation AERR** and use:
@@ -341,8 +356,9 @@ Report both navigation AERR and playbook_conformance_pct in §9 for navigation-p
 ### Verdict gates (structural — apply after AERR)
 **Default (code/app/knowledge-wrapper with active Track B):**
 - **Yes** — AERR >= 80 AND M1 <= 1 AND M2 = 0 AND M6 >= 1 AND M7 >= 1 AND M8 >= 1
-- **No** — AERR < 50 OR M7 = 0 OR no documented build path in README/scripts OR M1 >= 5
+- **No** — AERR < 50 OR M7 = 0 OR (no documented build path in README/Makefile/justfile/scripts) OR M1 >= 5
 - **Partial** — everything else
+Documented build path is satisfied by root Makefile/justfile with install/build/compile targets even when README omits a build line. Do not apply AERR < 50 No gate alone when makefile_front_door AND M2 = 0 AND execution_truth_floor applied — structural Partial minimum unless M7 = 0 or M1 >= 5.
 
 **Navigation-primary (navigation mode):**
 - **Yes** — navigation AERR >= 80 AND playbook_conformance_pct >= 85 AND M7 >= 1 AND M8 >= 1 AND M1 <= 1
@@ -353,14 +369,14 @@ Do not apply "no documented build path" No gate to navigation-primary repos.
 Label this structural_verdict. Prefix with **uncalibrated** when M9 = not-run. Note **navigation mode** when navigation-primary.
 
 ### M9 reconciliation (when M9 is not not-run)
-Compare structural_verdict to M9:
-- AERR Yes + M9 pass → validated_verdict Yes (metrics aligned)
-- AERR Yes + M9 fail-with-rescue or inconsistent → calibration_mismatch — downgrade to Partial; list which proxy metrics lied
-- AERR Partial + M9 pass → proxy_gap — keep Partial but note metrics may be too harsh; cite which penalties overshot
-- AERR No + M9 pass → calibration_mismatch — rare; cite false-positive drivers
-- Any M9 inconsistent → cap validated_verdict at Partial until repeat-run consistency is fixed
+Compare structural_verdict to M9 and set **calibration_status**:
+- AERR Yes + M9 pass → validated_verdict Yes, calibration_status aligned
+- AERR Yes + M9 fail-with-rescue or inconsistent → calibration_mismatch — validated_verdict Partial; list which proxy metrics lied
+- AERR Partial + M9 pass → proxy_gap — validated_verdict Partial; note metrics may be too harsh; cite which penalties overshot
+- AERR No + M9 pass → calibration_mismatch — validated_verdict Partial; cite false-positive drivers (typically M1 scavenger_penalty, AERR < 50 gate, or missing AGENTS.md counted as scavenger)
+- Any M9 inconsistent → cap validated_verdict at Partial, calibration_status calibration_mismatch until repeat-run consistency is fixed
 
-When M9 = not-run, validated_verdict = structural_verdict (uncalibrated) and state paired task still required.
+When M9 = not-run: validated_verdict = structural_verdict (uncalibrated), calibration_status uncalibrated, and state paired task still required.
 
 ### Audit effectiveness (is this measurement run valid?)
 Score **audit_confidence** high \| medium \| low:
@@ -388,7 +404,7 @@ Run and record [OBSERVED]:
 - `repo_remote` — `git remote get-url origin` (or `none` if unset)
 - `git_sha` — `git rev-parse HEAD`
 - `git_branch` — `git branch --show-current` (or detached SHA label)
-- `prompt_version` — `1.6.3` (PRM-CDXP-002)
+- `prompt_version` — `1.7.0` (PRM-CDXP-002)
 - `playbook_version` — from playbook header `Spec version:` line, or `unknown`
 
 ### Prior audit injection (optional)
@@ -401,11 +417,14 @@ After completing §1–§12, emit one fenced `json` block tagged `prm-cdxp-002-s
 
 Required fields (emit as valid JSON in output §13):
   schema (must be exactly "prm-cdxp-002-snapshot-v1"), audited_at, repo_path, repo_remote,
-  git_sha, git_branch, prompt_version ("1.6.3"), playbook_version, playbook_repo_type,
-  navigation_primary, playbook_conformance_pct, applicable_gap_count, present_count,
-  partial_count, missing_count, aerr_mode (default|navigation), aerr_score,
-  structural_verdict (exactly Yes|Partial|No — no suffixes), audit_confidence,
-  metrics {M1..M9}, gaps [{track, requirement, status, playbook_ref}],
+  git_sha, git_branch, prompt_version ("1.7.0"), playbook_version, playbook_repo_type,
+  navigation_primary, makefile_front_door (boolean), playbook_conformance_pct,
+  applicable_gap_count, present_count, partial_count, missing_count,
+  aerr_mode (default|navigation), aerr_score, aerr_raw (integer, omit when no floor applied),
+  execution_truth_floor (integer or null), structural_verdict (exactly Yes|Partial|No — no suffixes),
+  validated_verdict (Yes|Partial|No — same enum; omit when M9=not-run),
+  calibration_status (uncalibrated|aligned|proxy_gap|calibration_mismatch),
+  audit_confidence, metrics {M1..M9}, gaps [{track, requirement, status, playbook_ref}],
   smells {single_front_door, deploy_mirror, config_hierarchy, dependency_hygiene,
   test_placement, ci_truth, change_safety, release_path, agent_onboarding, dead_weight}
 
@@ -449,7 +468,7 @@ Return markdown in this order:
 ## 7. What does not — P0 / P1 / P2 (apply severity_bands; hygiene-only = P2)
 ## 8. Minimal fix order (max 5 structural moves, no refactors — prefer playbook Step refs)
 ## 9. AERR measurement — raw metrics table, formula arithmetic, AERR score, verdict gates applied
-## 10. Agent execution verdict — structural_verdict (uncalibrated if M9 not-run) + validated_verdict (if M9 provided) + one paragraph on reliable/consistent criteria; note playbook vs AERR alignment
+## 10. Agent execution verdict — structural_verdict (uncalibrated if M9 not-run) + validated_verdict + calibration_status (if M9 provided) + one paragraph on reliable/consistent criteria; note playbook vs AERR alignment
 ## 11. Audit effectiveness — audit_confidence (high/medium/low) + what would raise confidence
 ## 12. Calibration status — max 3 bullets: M9 value; playbook/AERR mismatch if any; one next step
 ## 13. JSON snapshot — single fenced `json` block tagged `prm-cdxp-002-snapshot` (schema per drift_compare; scores/statuses only)
