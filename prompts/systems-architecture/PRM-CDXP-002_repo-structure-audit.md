@@ -5,7 +5,7 @@ domain: systems-architecture
 source_format: Git repository (filesystem)
 target_orchestrator: Codex exec (read-only)
 downstream_consumer: Principal engineer / repo builder / agent onboarding
-version: 1.6.2
+version: 1.6.3
 last_updated: 2026-06-08
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-CDXP-002_repo-structure-audit.md
 use_for: Measure whether a repo enables reliable, consistent agent execution — structural readiness scorecard with AERR metrics, not business-logic review
@@ -23,7 +23,9 @@ use_for: Measure whether a repo enables reliable, consistent agent execution —
 
 **Variables:** None required. Dispatch sets the repo via `-C`. Optional: inject `<prior_audit_result>` (§13 JSON from a previous run) for drift delta. Operator should persist each run's §13 JSON for the next compare.
 
-*Registry JSON appends a feedback block after the primary output; respond to it after completing the mandatory checklist.*
+**Two-artifact rule:** Authors edit this `.md` file; agents and apps consume `prompt_text` from `dist/prompts_latest.json` after `python scripts/compile_prompts.py`.
+
+**Registry feedback:** Compiled JSON appends a score + one-line miss ask after the primary output. Complete §0–§14 first, then answer that feedback block. Do not duplicate the footer in this `.md` source — the compiler injects it.
 
 ## Prompt
 
@@ -386,7 +388,7 @@ Run and record [OBSERVED]:
 - `repo_remote` — `git remote get-url origin` (or `none` if unset)
 - `git_sha` — `git rev-parse HEAD`
 - `git_branch` — `git branch --show-current` (or detached SHA label)
-- `prompt_version` — `1.6.2` (PRM-CDXP-002)
+- `prompt_version` — `1.6.3` (PRM-CDXP-002)
 - `playbook_version` — from playbook header `Spec version:` line, or `unknown`
 
 ### Prior audit injection (optional)
@@ -399,7 +401,7 @@ After completing §1–§12, emit one fenced `json` block tagged `prm-cdxp-002-s
 
 Required fields (emit as valid JSON in output §13):
   schema (must be exactly "prm-cdxp-002-snapshot-v1"), audited_at, repo_path, repo_remote,
-  git_sha, git_branch, prompt_version ("1.6.2"), playbook_version, playbook_repo_type,
+  git_sha, git_branch, prompt_version ("1.6.3"), playbook_version, playbook_repo_type,
   navigation_primary, playbook_conformance_pct, applicable_gap_count, present_count,
   partial_count, missing_count, aerr_mode (default|navigation), aerr_score,
   structural_verdict (exactly Yes|Partial|No — no suffixes), audit_confidence,
@@ -453,11 +455,21 @@ Return markdown in this order:
 ## 13. JSON snapshot — single fenced `json` block tagged `prm-cdxp-002-snapshot` (schema per drift_compare; scores/statuses only)
 ## 14. Drift delta — comparison table vs `<prior_audit_result>` if injected; else not-available
 
+Primary output ends at §14. Do not embed prompt score or miss feedback inside §0–§14.
+
 Keep prose sections under 260 lines. §13 JSON is exempt from line cap. If P0 count exceeds 5, sections 6–8 may expand; abbreviate section 12 first, never §13.
 </structured_output_contract>
 
+<registry_feedback>
+When dispatch uses compiled JSON (`dist/prompts_latest.json`), a compile-time footer follows this prompt — it is NOT part of the audit contract. After §14 is complete, respond to that footer in order:
+1. Score: 1 (poor) / 2 (adequate) / 3 (excellent)
+2. One line: what this prompt missed or got wrong — **prompt friction only** (ambiguous gate, wrong n/a rule, section ordering, missing playbook ref), not repo fix recommendations.
+
+Do not paste or paraphrase the footer into §0–§14. If consuming the `.md` source only (no JSON footer), skip this step.
+</registry_feedback>
+
 <default_follow_through_policy>
-Collect §0 metadata (git SHA, branch, remote) first. Read the playbook, classify repo type, score applicable tracks, run cartography and tracers, then emit §13 JSON snapshot. If `<prior_audit_result>` is injected, complete §14 drift delta. Ask no questions unless a tracer is impossible without credentials — then record that as a finding.
+Collect §0 metadata (git SHA, branch, remote) first. Read the playbook, classify repo type, score applicable tracks, run cartography and tracers, then emit §13 JSON snapshot. If `<prior_audit_result>` is injected, complete §14 drift delta. Then answer registry feedback (score + one-line prompt friction) when compiled JSON footer is present. Ask no questions unless a tracer is impossible without credentials — then record that as a finding.
 </default_follow_through_policy>
 
 <action_safety>

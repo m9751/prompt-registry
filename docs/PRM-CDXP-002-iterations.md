@@ -10,9 +10,14 @@ Living record while the prompt is refined. **Not dispatch-ready** until ship gat
 
 | Field | Value |
 |-------|-------|
-| **Version** | `1.6.2` |
+| **Version** | `1.6.3` |
 | **Source** | `PRM-CDXP-002_repo-structure-audit.md` |
 | **Compiled** | `dist/prompts_latest.json` |
+
+### v1.6.3 — 2026-06-08 (registry feedback wire)
+- Overview: two-artifact rule + registry feedback (CONTRIBUTING § Prompt Feedback).
+- Prompt body: `<registry_feedback>` — score + one-line prompt friction after §14; not inside §0–§14.
+- `structured_output_contract` + `default_follow_through_policy` updated.
 
 ### v1.6.2 — 2026-06-08 (playbook Step 1a + 8c wire)
 - Track A: README "For Claude" must be repo-specific per playbook Step 1a template — generic filler → partial.
