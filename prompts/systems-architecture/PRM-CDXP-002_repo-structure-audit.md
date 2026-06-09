@@ -5,7 +5,7 @@ domain: systems-architecture
 source_format: Git repository (filesystem)
 target_orchestrator: Codex exec (read-only)
 downstream_consumer: Principal engineer / repo builder / agent onboarding
-version: 1.7.1
+version: 1.7.2
 last_updated: 2026-06-09
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-CDXP-002_repo-structure-audit.md
 use_for: Measure whether a repo enables reliable, consistent agent execution — structural readiness scorecard with AERR metrics, not business-logic review
@@ -54,6 +54,12 @@ Canonical M9 task — same instructions on every repo (executed in a separate wr
 
 Orient using only README, AGENTS.md, Makefile, justfile, and .github/workflows. Find the documented lint or verify command and the smallest documented build command. Run verify, then build. Report: each command used, pass/fail/sandbox-blocked, artifact path or blocker class (missing-prereq, missing-credential, doc-conflict, sandbox-blocked). Do not invent commands. Ask the operator only if credentials are required. Run twice with identical instructions; record whether commands and outcome match.
 </standard_paired_task>
+
+<navigation_paired_task>
+Canonical M9 task for navigation-primary repos (docs-only-index, navigation-primary knowledge-wrapper) — executed in a separate writable run:
+
+Read only README.md and AGENTS.md. Answer: "Where is load-bearing infrastructure documented?" Open the cited file and quote its first line. Run twice with identical instructions; record whether file path and outcome match.
+</navigation_paired_task>
 
 <playbook_authority>
 Before cartography, read the canonical new-repo playbook (read-only):
@@ -236,7 +242,8 @@ Tracer B — Build truth (navigation-primary = false only)
 Tracer C — Verify truth (navigation-primary = false only)
 - Canonical test/lint command from same sources.
 - Does CI run what local docs claim?
-- README vs Makefile vs CI mismatch = structural failure even if code is fine.
+- README vs Makefile vs CI mismatch on **build/install/compile** = M2 increment; verify/lint splits are M5/M6 (ci parity), not M2.
+- CI workflow that validates committed artifacts while local runs a generator (documented in workflow header) is **ci_artifact_validation** — not an M2 build conflict vs `make install`.
 - Apply the same `sandbox-blocked` rule as Tracer B for verify/lint commands that require writes.
 
 **Tracer C — workflow count cap (>3 workflows):** When cartography finds >3 workflow files, Tracer C uses metadata-only inventory per `<cartography>` — full command parity may be **unverifiable** in read-only mode. Operator may run `github-reviewer` (name-dispatch from smokin-knowledge) on the **canonical workflow only** — the workflow that mirrors Makefile/README verify or build commands — and inject `<github_reviewer_supplement>`. Record `canonical_workflow_path` in §4 and §13. Do not open all workflow YAML bodies during read-only audit when count >3.
@@ -280,7 +287,7 @@ Compute **AERR** (Agent Execution Readiness Rating), 0–100. Every metric must 
 | ID | Metric | How to measure |
 |----|--------|----------------|
 | M1 | scavenger_hunt_count | Integer from Tracer A after exclusions (split docs, undeclared env, manual prereqs each = 1; Makefile-front-door and legacy CLAUDE.md rules apply) |
-| M2 | command_conflict_count | Integer: distinct canonical build commands across README / Makefile / CI |
+| M2 | command_conflict_count | Integer: distinct canonical **build/install/compile** commands across README / Makefile / CI — verify/lint/test commands excluded |
 | M3 | smell_total | Sum of applicable smell scores (max 20; max 10 when navigation-primary with 5 smells n/a) |
 | M4 | tracer_b | pass \| fail \| sandbox-blocked \| not-attempted \| n-a |
 | M5 | tracer_c_parity | yes \| no \| n-a (n/a if navigation-primary, or no CI and docs state local-only verify) |
@@ -300,11 +307,17 @@ Validated = M9 confirms or contradicts the structural verdict.
 If dispatcher provides `<paired_task_result>`, set M9 from it. Otherwise M9 = not-run.
 The paired task text is defined in `<standard_paired_task>` — use that verbatim for run1/run2.
 
-Expected `<paired_task_result>` shape:
-- task: text from standard_paired_task
+Expected `<paired_task_result>` shape (execution repos — task = standard_paired_task):
+- task: standard_paired_task
 - run1: success|fail, commands_from_docs|invented, human_rescue yes|no
 - run2: (optional) same_commands yes|no, same_outcome yes|no
-- M9 mapping: pass = run1 success + no rescue + commands_from_docs; fail-with-rescue = fail or rescue or invented commands; inconsistent = run2 differs on commands or outcome; not-run = block absent
+
+Expected shape (navigation-primary repos — task = navigation_paired_task):
+- task: navigation_paired_task
+- run1: success|fail, file_opened (path), first_line (string), human_rescue yes|no
+- run2: (optional) same_file yes|no, same_outcome yes|no
+
+M9 mapping (both shapes): pass = run1 success + no rescue + (commands_from_docs OR file_opened from docs); fail-with-rescue = fail or rescue or invented path/commands; inconsistent = run2 differs on commands/file or outcome; not-run = block absent
 
 Operator may inject `<paired_task_result>` from a separate writable M9 run (calibration panel) or post-hoc after read-only audit completes. When injected, compute validated_verdict and calibration_status per M9 reconciliation below and emit both in §10 and §13.
 
@@ -321,7 +334,7 @@ Expected shape:
 
 Scoring rules when supplement present:
 - `command_parity` = match AND `github_reviewer_verdict` in (SHIP, SHIP-WITH-HEDGES) → set **M5 = yes** for canonical path; set smell **CI truth = 2** if CI was previously scored 1 solely due to >3 workflow cap
-- `command_parity` = partial → M5 stays no; CI truth may rise to 1→1 (document gap in §4)
+- `command_parity` = partial → M5 stays no; CI truth stays 1; document ci_artifact_validation gap in §4; **do not increment M2** when partiality is artifact-validation-only (CI validates committed output, local runs generator)
 - `command_parity` = mismatch → M5 = no; do not upgrade CI truth
 - HIGH findings from github-reviewer are **platform security** — record in §7 as P1 (not M6 downgrade) unless they block the documented command path
 
@@ -423,7 +436,7 @@ Run and record [OBSERVED]:
 - `repo_remote` — `git remote get-url origin` (or `none` if unset)
 - `git_sha` — `git rev-parse HEAD`
 - `git_branch` — `git branch --show-current` (or detached SHA label)
-- `prompt_version` — `1.7.1` (PRM-CDXP-002)
+- `prompt_version` — `1.7.2` (PRM-CDXP-002)
 - `playbook_version` — from playbook header `Spec version:` line, or `unknown`
 
 ### Prior audit injection (optional)
@@ -436,7 +449,7 @@ After completing §1–§12, emit one fenced `json` block tagged `prm-cdxp-002-s
 
 Required fields (emit as valid JSON in output §13):
   schema (must be exactly "prm-cdxp-002-snapshot-v1"), audited_at, repo_path, repo_remote,
-  git_sha, git_branch, prompt_version ("1.7.1"), playbook_version, playbook_repo_type,
+  git_sha, git_branch, prompt_version ("1.7.2"), playbook_version, playbook_repo_type,
   navigation_primary, makefile_front_door (boolean), playbook_conformance_pct,
   applicable_gap_count, present_count, partial_count, missing_count,
   aerr_mode (default|navigation), aerr_score, aerr_raw (integer, omit when no floor applied),

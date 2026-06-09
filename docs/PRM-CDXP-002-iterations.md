@@ -10,9 +10,14 @@ Living record while the prompt is refined. **Not dispatch-ready** until ship gat
 
 | Field | Value |
 |-------|-------|
-| **Version** | `1.7.1` |
+| **Version** | `1.7.2` |
 | **Source** | `PRM-CDXP-002_repo-structure-audit.md` |
 | **Compiled** | `dist/prompts_latest.json` |
+
+### v1.7.2 — 2026-06-09 (M2 scope + navigation M9 schema)
+- M2: build/install/compile only — verify/lint excluded; CI artifact-validation vs local install not M2.
+- Tracer C: ci_artifact_validation label; github supplement partial does not increment M2.
+- `<navigation_paired_task>` + dual-shape `<paired_task_result>` parsing for docs-only repos.
 
 ### v1.7.1 — 2026-06-09 (github-reviewer Tracer C supplement)
 - Tracer C footnote: when >3 workflows, operator may inject `<github_reviewer_supplement>` on canonical workflow only.
