@@ -44,6 +44,13 @@ Production JSON: `https://m9751.github.io/prompt-registry/prompts_latest.json`
 4. **Branch from `origin/main`** — see `spec/lessons.md` for orphan-main RCA.
 5. **Open a PR** — CI runs the same path as `make verify`.
 
+## Boundary — what is NOT here
+
+- **Claude config / hooks / skills** — [`claude-config`](https://github.com/m9751/claude-config) owns `~/.claude/` mirror
+- **Platform OS index** — [`smokin-os`](https://github.com/m9751/smokin-os) owns stack catalog and hook registry spec
+- **Territory data / deliverables** — SmokinTerritory Supabase
+- **Authoring-only without compile** — agents and apps consume `dist/prompts_latest.json`, not raw `.md` alone
+
 
 ---
 
