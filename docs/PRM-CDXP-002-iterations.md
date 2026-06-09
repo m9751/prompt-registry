@@ -10,9 +10,15 @@ Living record while the prompt is refined. **Not dispatch-ready** until ship gat
 
 | Field | Value |
 |-------|-------|
-| **Version** | `1.7.0` |
+| **Version** | `1.7.1` |
 | **Source** | `PRM-CDXP-002_repo-structure-audit.md` |
 | **Compiled** | `dist/prompts_latest.json` |
+
+### v1.7.1 — 2026-06-09 (github-reviewer Tracer C supplement)
+- Tracer C footnote: when >3 workflows, operator may inject `<github_reviewer_supplement>` on canonical workflow only.
+- M5/M6 scoring rules: parity match + SHIP/SHIP-WITH-HEDGES upgrades CI truth; security HIGHs → §7 P1 not M6 downgrade.
+- §13: `canonical_workflow_path`, `github_reviewer_verdict`, `github_reviewer_supplement_applied`.
+- Calibration panel: prompt-registry `compile-and-deploy.yml` + claude-config `catalog-rebuild.yml` reviewed and folded in.
 
 ### v1.7.0 — 2026-06-09 (M9 calibration fix — claude-config false negative)
 - **Tracer A M1 exclusions:** Makefile-as-front-door (build not in README OK); verify split when M2=0; missing AGENTS.md when CLAUDE.md exists (legacy layout).

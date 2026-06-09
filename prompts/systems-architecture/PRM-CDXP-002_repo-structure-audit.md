@@ -5,7 +5,7 @@ domain: systems-architecture
 source_format: Git repository (filesystem)
 target_orchestrator: Codex exec (read-only)
 downstream_consumer: Principal engineer / repo builder / agent onboarding
-version: 1.7.0
+version: 1.7.1
 last_updated: 2026-06-09
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-CDXP-002_repo-structure-audit.md
 use_for: Measure whether a repo enables reliable, consistent agent execution — structural readiness scorecard with AERR metrics, not business-logic review
@@ -238,6 +238,8 @@ Tracer C — Verify truth (navigation-primary = false only)
 - Does CI run what local docs claim?
 - README vs Makefile vs CI mismatch = structural failure even if code is fine.
 - Apply the same `sandbox-blocked` rule as Tracer B for verify/lint commands that require writes.
+
+**Tracer C — workflow count cap (>3 workflows):** When cartography finds >3 workflow files, Tracer C uses metadata-only inventory per `<cartography>` — full command parity may be **unverifiable** in read-only mode. Operator may run `github-reviewer` (name-dispatch from smokin-knowledge) on the **canonical workflow only** — the workflow that mirrors Makefile/README verify or build commands — and inject `<github_reviewer_supplement>`. Record `canonical_workflow_path` in §4 and §13. Do not open all workflow YAML bodies during read-only audit when count >3.
 </tracer_bullets>
 
 <smell_checklist>
@@ -307,6 +309,23 @@ Expected `<paired_task_result>` shape:
 Operator may inject `<paired_task_result>` from a separate writable M9 run (calibration panel) or post-hoc after read-only audit completes. When injected, compute validated_verdict and calibration_status per M9 reconciliation below and emit both in §10 and §13.
 
 Do NOT execute the paired task in this read-only audit. Record M9 only from injected results or not-run.
+
+### GitHub reviewer supplement (Tracer C — when >3 workflows or M5 unverifiable)
+When dispatcher provides `<github_reviewer_supplement>`, use it to score M5/M6 for the **canonical workflow only** — not repo-wide CI security.
+
+Expected shape:
+- canonical_workflow_path: path under `.github/workflows/`
+- github_reviewer_verdict: SHIP | SHIP-WITH-HEDGES | NEEDS-FIXES | NEEDS-DECISION
+- command_parity: match | partial | mismatch | n-a
+- notes: one line (e.g., which local command CI runs or why CI validates artifact not generator)
+
+Scoring rules when supplement present:
+- `command_parity` = match AND `github_reviewer_verdict` in (SHIP, SHIP-WITH-HEDGES) → set **M5 = yes** for canonical path; set smell **CI truth = 2** if CI was previously scored 1 solely due to >3 workflow cap
+- `command_parity` = partial → M5 stays no; CI truth may rise to 1→1 (document gap in §4)
+- `command_parity` = mismatch → M5 = no; do not upgrade CI truth
+- HIGH findings from github-reviewer are **platform security** — record in §7 as P1 (not M6 downgrade) unless they block the documented command path
+
+Record `github_reviewer_supplement_applied: true` in §13 when injected. Security verdict and parity are separate dimensions.
 
 ### Calibration protocol (operator — for metric tuning across repos)
 Run on a 3–5 repo panel when validating this prompt:
@@ -404,7 +423,7 @@ Run and record [OBSERVED]:
 - `repo_remote` — `git remote get-url origin` (or `none` if unset)
 - `git_sha` — `git rev-parse HEAD`
 - `git_branch` — `git branch --show-current` (or detached SHA label)
-- `prompt_version` — `1.7.0` (PRM-CDXP-002)
+- `prompt_version` — `1.7.1` (PRM-CDXP-002)
 - `playbook_version` — from playbook header `Spec version:` line, or `unknown`
 
 ### Prior audit injection (optional)
@@ -417,14 +436,16 @@ After completing §1–§12, emit one fenced `json` block tagged `prm-cdxp-002-s
 
 Required fields (emit as valid JSON in output §13):
   schema (must be exactly "prm-cdxp-002-snapshot-v1"), audited_at, repo_path, repo_remote,
-  git_sha, git_branch, prompt_version ("1.7.0"), playbook_version, playbook_repo_type,
+  git_sha, git_branch, prompt_version ("1.7.1"), playbook_version, playbook_repo_type,
   navigation_primary, makefile_front_door (boolean), playbook_conformance_pct,
   applicable_gap_count, present_count, partial_count, missing_count,
   aerr_mode (default|navigation), aerr_score, aerr_raw (integer, omit when no floor applied),
   execution_truth_floor (integer or null), structural_verdict (exactly Yes|Partial|No — no suffixes),
   validated_verdict (Yes|Partial|No — same enum; omit when M9=not-run),
   calibration_status (uncalibrated|aligned|proxy_gap|calibration_mismatch),
-  audit_confidence, metrics {M1..M9}, gaps [{track, requirement, status, playbook_ref}],
+  canonical_workflow_path (string or null), github_reviewer_verdict (enum or null),
+  github_reviewer_supplement_applied (boolean), audit_confidence, metrics {M1..M9},
+  gaps [{track, requirement, status, playbook_ref}],
   smells {single_front_door, deploy_mirror, config_hierarchy, dependency_hygiene,
   test_placement, ci_truth, change_safety, release_path, agent_onboarding, dead_weight}
 
@@ -470,7 +491,7 @@ Return markdown in this order:
 ## 9. AERR measurement — raw metrics table, formula arithmetic, AERR score, verdict gates applied
 ## 10. Agent execution verdict — structural_verdict (uncalibrated if M9 not-run) + validated_verdict + calibration_status (if M9 provided) + one paragraph on reliable/consistent criteria; note playbook vs AERR alignment
 ## 11. Audit effectiveness — audit_confidence (high/medium/low) + what would raise confidence
-## 12. Calibration status — max 3 bullets: M9 value; playbook/AERR mismatch if any; one next step
+## 12. Calibration status — max 3 bullets: M9 value; github_reviewer supplement if applied; playbook/AERR mismatch if any; one next step
 ## 13. JSON snapshot — single fenced `json` block tagged `prm-cdxp-002-snapshot` (schema per drift_compare; scores/statuses only)
 ## 14. Drift delta — comparison table vs `<prior_audit_result>` if injected; else not-available
 
