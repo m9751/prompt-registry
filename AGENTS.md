@@ -2,6 +2,10 @@
 
 This file is the entry point for AI agents, tools, and contributors reading this repo programmatically.
 
+> **Authority:** Files in this repo are the source of truth. If memory or recall.md conflicts with what you read here, trust what you read. Reconcile stale memory before proceeding.
+>
+> **Hierarchy:** Disk (this repo) → `dist/prompts_latest.json` is generated from disk; never treat memory as override for compile rules or frontmatter schema.
+
 ---
 
 ## What this repo is
@@ -23,10 +27,11 @@ A version-controlled prompt registry with automated validation, dual delivery (h
    - Domain enum: `product-delivery`, `ai-engineering`, `systems-architecture`, `sales-architecture`, `presentation`
    - Prompt text lives in exactly one fenced code block after the frontmatter
 
-3. **Run the compiler** — this is mandatory:
+3. **Run verify** — this is mandatory:
    ```bash
-   python scripts/compile_prompts.py
+   make verify
    ```
+   (`make verify` = compile + footer guard; matches CI.)
 
 4. **Verify the compiled JSON** — open `dist/prompts_latest.json` and confirm your prompt's `prompt_text` ends with the feedback footer. This is the artifact agents and apps consume.
 
@@ -89,6 +94,14 @@ A PR that only modifies `.md` without regenerating the JSON is incomplete. CI wi
 
 ---
 
+## NEVER
+
+- **Never ship a prompt PR without running `make verify`.** `.md` alone is incomplete — CI and agents consume `dist/prompts_latest.json`.
+- **Never add the feedback footer to `.md` source.** `scripts/compile_prompts.py` injects it at compile time.
+- **Never create `main` as an orphan branch.** See `spec/lessons.md` and `docs/rca-divergence-2026-06-02.md`.
+- **Never edit `dist/` by hand.** Regenerate via `make build` / `make verify`.
+
+
 ## Known anti-patterns
 
 ### Orphan `main` initialization (2026-06-02)
@@ -103,3 +116,16 @@ git push origin main
 ```
 
 **Full RCA:** `docs/rca-divergence-2026-06-02.md`
+
+## Git workflow
+
+```bash
+git fetch origin && git checkout main && git pull --rebase origin main
+git checkout -b feat/prm-xxx-slug
+make verify
+git add <files-by-name>
+git commit -m "feat(prompts): <description>"
+git push -u origin feat/prm-xxx-slug
+gh pr create --base main
+```
+

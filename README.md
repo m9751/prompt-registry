@@ -4,6 +4,40 @@ Welcome to the central command center for our organization's engineered AI promp
 
 ---
 
+## Reading order
+
+| If you are asking… | Start here |
+|---|---|
+| "How do I compile and verify a prompt change?" | **Quick start** below → `make verify` |
+| "How do I add or edit a prompt?" | [`AGENTS.md`](AGENTS.md) |
+| "Am I about to break the compile pipeline?" | [`spec/lessons.md`](spec/lessons.md) — STOP |
+| "What's the architecture / CI contract?" | [`spec/architecture.md`](spec/architecture.md) |
+| "What's current state?" | [`STATUS.md`](STATUS.md) |
+| "Full contributor detail?" | [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) |
+| "Security / PAT access?" | [`docs/SECURITY.md`](docs/SECURITY.md) |
+
+## Quick start
+
+```bash
+git clone https://github.com/m9751/prompt-registry.git ~/repos/prompt-registry
+cd ~/repos/prompt-registry
+make bootstrap
+make verify          # compile + footer check — exit 0 = healthy
+```
+
+Production JSON: `https://m9751.github.io/prompt-registry/prompts_latest.json`
+
+## For Claude landing here (read before editing)
+
+1. **Read `AGENTS.md` first** — authority pointer and add-prompt procedure live there.
+2. **Two-artifact rule:** edit `prompts/**/*.md`, then `make verify` — agents consume JSON, not markdown alone.
+3. **Never add feedback footer to `.md`** — compiler injects it; verify in `dist/prompts_latest.json`.
+4. **Branch from `origin/main`** — see `spec/lessons.md` for orphan-main RCA.
+5. **Open a PR** — CI runs the same path as `make verify`.
+
+
+---
+
 ## 📖 How to Use This Registry
 
 ### 👥 For Humans (Copy-Paste)
