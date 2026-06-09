@@ -25,6 +25,15 @@ make bootstrap
 make verify          # compile + footer check — exit 0 = healthy
 ```
 
+| Command | When |
+|---|---|
+| `make bootstrap` | First clone — install Python deps |
+| `make build` | Compile prompts → `dist/` only |
+| `make verify` | **Default healthy path** — build + footer guard (CI parity) |
+| `make lint` | Alias for `make verify` |
+
+
+
 Production JSON: `https://m9751.github.io/prompt-registry/prompts_latest.json`
 
 ## For Claude landing here (read before editing)
