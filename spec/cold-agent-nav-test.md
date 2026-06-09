@@ -1,6 +1,8 @@
 # Cold-Agent Navigation Test — prompt-registry
 
 > **Valid-as-of:** 2026-06-09
+> **Falsification-pointer:** Re-run reading-order question against current `README.md` table before citing PASS.
+> **Review trigger:** 2026-09-09 or after reading-order table changes.
 > **Playbook ref:** smokin-os `spec/new-repo-playbook.md` Step 5 + Step 5b
 > **Operator:** Michael Busacca (calibration panel PRM-CDXP-002)
 
