@@ -8,5 +8,5 @@
 
 ## Open items
 
-- **PRM-CDXP-002 v1.7.2** — ship gate calibrated; playbook conformance pass in progress (this branch).
+- **PRM-CDXP-002 v1.7.2** — ship gate calibrated; **playbook conformance 100%** (PRs #38–#40, 2026-06-09).
 - **Domain expansion** — presentation domain live; monitor `domains.json` routing after new domains.
