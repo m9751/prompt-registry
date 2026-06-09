@@ -19,4 +19,5 @@ not_when: The output is a sales or executive presentation — use sales-architec
 - `PRM-NBLM-003` — HTML-Aware Slide Parser
 - `PRM-NBLM-004` — Architecture Semantic Compressor
 - `PRM-CDXP-001` — PowerShell Security Audit Framework — Endpoint Discovery Design
+- `PRM-CDXP-002` — Repository Structure Audit — Skeleton, Not Content
 - `PRM-INFRA-001` — Operational Hardening Deploy
