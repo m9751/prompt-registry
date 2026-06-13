@@ -21,3 +21,4 @@ not_when: The output is a sales or executive presentation — use sales-architec
 - `PRM-CDXP-001` — PowerShell Security Audit Framework — Endpoint Discovery Design
 - `PRM-CDXP-002` — Repository Structure Audit — Skeleton, Not Content
 - `PRM-INFRA-001` — Operational Hardening Deploy
+- `PRM-INFRA-002` — Make Every Derived Index Self-Healing
