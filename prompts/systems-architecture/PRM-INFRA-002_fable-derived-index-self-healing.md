@@ -40,6 +40,8 @@ Work the derived-index register at `C:\Users\mbusa\repos\claude-config\reference
 
 The platform rules for any GitHub Actions / Task Scheduler / PowerShell / Bash you write live in `~/repos/smokin-knowledge/AGENTS.md` — route to the matching domain (`github/`, `powershell/`, `bash/`) and follow its hard rules before writing.
 
+The engineering method for each half is also captured as two on-demand guides in the `smokin-knowledge` repo — load and follow them: **`ci-cd-pipeline-builder`** for building each trigger (scheduled job / CI workflow / hook), and **`observability-designer`** for the freshness/coverage invariant and its warning surface.
+
 The reference implementation for both halves of each fix is already live:
 - **Trigger half:** the Stop hook `~/.claude/hooks/memory-manifest-stop-sync.sh` — rebuild-on-drift pattern (read it before building the first new trigger; port its shape, don't invent a new one).
 - **Freshness/invariant half:** the `smokin_memory` session-close ingest plus 03:00-fallback Task Scheduler job — count(index) == count(source), chunk-age check pattern. Read the scheduler task definition before wiring a new job.
