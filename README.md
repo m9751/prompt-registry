@@ -92,6 +92,8 @@ curl -s https://m9751.github.io/prompt-registry/prompts_latest.json | jq '.promp
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `PRM-MMLM-006` | [Presentation Slide Visual and Textual Markdown Extractor](prompts/ai-engineering/PRM-MMLM-006_presentation-markdown-extractor.md) | Analyzing presentation screenshots to extract literal text hierarchies alongside deep visual-narrative interpretations into clean Markdown. | PNG / JPG | Multimodal LLM (e.g., GPT-4o, Claude 3.5 Sonnet) | `1.0.1` | [View File](prompts/ai-engineering/PRM-MMLM-006_presentation-markdown-extractor.md) |
 | `PRM-NBLM-002` | [Sequential Machine-Optimized Extractor](prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md) | Extract structured JSON data from a slide deck for app ingestion | PPTX / PDF | Long-Context LLMs | `1.0.0` | [View File](prompts/ai-engineering/PRM-NBLM-002_sequential-machine-extractor.md) |
+| `PRM-NBLM-007` | [NotebookLM Deep Research — Discovery / Gather Prompt](prompts/ai-engineering/PRM-NBLM-007_deep-research-discovery.md) | Gather best-practice and practitioner web sources on any subject into a NotebookLM notebook for AI analysis | Subject (free text) | NotebookLM | `1.0.0` | [View File](prompts/ai-engineering/PRM-NBLM-007_deep-research-discovery.md) |
+| `PRM-NBLM-008` | [NotebookLM Master Synthesis — Organize-for-AI Template](prompts/ai-engineering/PRM-NBLM-008_master-synthesis.md) | Synthesize all loaded notebook sources into a definitive AI-optimized reference document | NotebookLM notebook (loaded sources) | NotebookLM | `1.0.0` | [View File](prompts/ai-engineering/PRM-NBLM-008_master-synthesis.md) |
 
 ### 🛠️ Systems Architecture
 | ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
