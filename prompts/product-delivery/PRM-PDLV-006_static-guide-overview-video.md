@@ -21,6 +21,8 @@ Agent-optimized system prompt for a **single primary overview video** on documen
 
 **Reference pilot:** [mulesoft-claude-onboarding](https://github.com/m9751/mulesoft-claude-onboarding) — operational log: `demo-output/PROMPT_LOG.md`. Current deploy (`/demo-output/output.mp4`, three video beacons) is valid; this prompt governs future rebuilds only.
 
+**Packaging blueprint:** [docs/static-guide-video-packaging.md](../../docs/static-guide-video-packaging.md) — build pipeline, scene schema, layout library, extraction phases (pilot → reusable toolkit).
+
 ## Prompt
 
 ```

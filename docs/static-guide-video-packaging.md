@@ -233,7 +233,7 @@ No MCP required for the proven pilot path.
 - [ ] Add `brand.json` injection in build engine
 
 ### Phase 3 — Genericize engine
-- [ ] `build_demo.py` → `build_video.py` with CLI
+- [x] `build_demo.py` → `build_video.py` with CLI
 - [ ] `capture_runner.py` + `captures.yaml`
 - [ ] Parameterized `smoke-test.sh`
 

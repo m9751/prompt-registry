@@ -1,0 +1,49 @@
+base_url: https://mulesoft-claude-cursor-onboarding.vercel.app/
+viewport:
+  width: 1920
+  height: 1080
+steps:
+  - action: goto
+    url: "?editor=cursor"
+    wait_until: networkidle
+  - action: screenshot
+    file: capture-tab-bar.png
+    ms: 500
+  - action: scroll
+    scroll: [0, 400]
+  - action: screenshot
+    file: capture-cursor-welcome.png
+    ms: 500
+  - action: goto
+    url: "/"
+    wait_until: networkidle
+  - action: click
+    selector: "#etab-scriptflow"
+  - action: wait
+    ms: 500
+  - action: screenshot_locator
+    selector: '[data-slide="code-compare"] > div'
+    file: capture-script-legacy-panel.png
+    ms: 300
+    first: true
+  - action: screenshot_locator
+    selector: '[data-slide="code-compare"]'
+    file: capture-script-before-after.png
+    ms: 500
+  - action: scroll
+    selector: "#etab-scriptflow"
+  - action: screenshot
+    file: capture-scriptflow-tab.png
+    ms: 400
+  - action: scroll
+    selector: '[data-slide="architecture"]'
+    block: start
+  - action: screenshot
+    file: capture-scriptflow-arch.png
+    ms: 800
+  - action: goto
+    url: "?editor=salesforce"
+    wait_until: networkidle
+  - action: screenshot
+    file: capture-salesforce-strategy.png
+    ms: 600
