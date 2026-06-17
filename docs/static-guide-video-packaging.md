@@ -1,6 +1,6 @@
 # Static Guide Overview Video — Packaging Blueprint
 
-**Status:** Phase 2 started (schema extracted)
+**Status:** Phase 3–4 in progress (toolkit + skill shipped; PR #47 open)
 **Last updated:** 2026-06-16
 **Pilot:** [mulesoft-claude-onboarding](https://github.com/m9751/mulesoft-claude-onboarding)
 **Agent prompt:** `PRM-PDLV-006` (`prompts/product-delivery/PRM-PDLV-006_static-guide-overview-video.md`)
@@ -230,21 +230,22 @@ No MCP required for the proven pilot path.
 ### Phase 2 — Extract schema + layouts
 - [x] Publish `scenes.schema.json` (+ `captures.schema.json`, `brand.example.json` in `packages/static-guide-video/schema/`)
 - [ ] Split layouts into modules
-- [ ] Add `brand.json` injection in build engine
+- [x] Add `brand.json` injection in build engine (`--brand` flag in `build_video.py`)
 
 ### Phase 3 — Genericize engine
 - [x] `build_demo.py` → `build_video.py` with CLI
-- [ ] `capture_runner.py` + `captures.yaml`
-- [ ] Parameterized `smoke-test.sh`
+- [x] `capture_runner.py` + pilot `captures.yaml`
+- [x] Parameterized `smoke-test.sh` in `templates/`
 
 ### Phase 4 — Skill / install path
-- [ ] New skill `static-guide-video` (or extend `demo-video`)
+- [x] New skill `static-guide-video` at `~/.grok/skills/static-guide-video/SKILL.md`
 - [ ] Register in smokin-os platform catalog
 - [ ] Second pilot on non-MuleSoft HTML guide
 
 ### Phase 5 — Distribution
-- [ ] GitHub repo or `prompt-registry/packages/`
+- [x] `prompt-registry/packages/static-guide-video/` (PR #47)
 - [ ] PRM-PDLV-006 references toolkit version pin
+- [ ] Merge PR #47
 
 ---
 
