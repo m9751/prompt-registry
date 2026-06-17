@@ -239,7 +239,7 @@ No MCP required for the proven pilot path.
 
 ### Phase 4 — Skill / install path
 - [x] New skill `static-guide-video` at `~/.grok/skills/static-guide-video/SKILL.md`
-- [ ] Register in smokin-os platform catalog
+- [x] Register in smokin-os platform catalog (PR smokin-os `docs/static-guide-video-catalog`)
 - [ ] Second pilot on non-MuleSoft HTML guide
 
 ### Phase 5 — Distribution
