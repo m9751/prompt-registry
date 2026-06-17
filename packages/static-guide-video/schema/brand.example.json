@@ -1,0 +1,14 @@
+{
+  "name": "mulesoft-onboarding",
+  "logo": "../../mulesoft-logo.png",
+  "css_vars": {
+    "--blue-20": "#032D60",
+    "--blue-50": "#0176D3",
+    "--blue-95": "#EEF4FF",
+    "--cloud-60": "#0D9DDA",
+    "--orange-70": "#FE9339",
+    "--red": "#EA001E",
+    "--font": "'Salesforce Sans','SF Pro Display',Arial,sans-serif"
+  },
+  "accent_bar": "linear-gradient(90deg, var(--cloud-60), var(--orange-70))"
+}
