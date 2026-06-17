@@ -1,7 +1,7 @@
 # Static Guide Overview Video — Packaging Blueprint
 
-**Status:** Phase 3–4 in progress (toolkit + skill shipped; PR #47 open)
-**Last updated:** 2026-06-16
+**Status:** Phase 3–4 in progress (toolkit verified; PR #47 open)
+**Last updated:** 2026-06-17
 **Pilot:** [mulesoft-claude-onboarding](https://github.com/m9751/mulesoft-claude-onboarding)
 **Agent prompt:** `PRM-PDLV-006` (`prompts/product-delivery/PRM-PDLV-006_static-guide-overview-video.md`)
 **Pilot run log:** `demo-output/PROMPT_LOG.md`
@@ -244,7 +244,8 @@ No MCP required for the proven pilot path.
 
 ### Phase 5 — Distribution
 - [x] `prompt-registry/packages/static-guide-video/` (PR #47)
-- [ ] PRM-PDLV-006 references toolkit version pin
+- [x] Pilot rebuild verified with `build_video.py` (2026-06-17: 59.9s, 9 beats, re-encoded concat)
+- [x] PRM-PDLV-006 references toolkit version pin (v1.1.0)
 - [ ] Merge PR #47
 
 ---

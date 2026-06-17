@@ -5,8 +5,8 @@ domain: product-delivery
 source_format: HTML guide URL + scene spec (JSON/YAML) + image captures
 target_orchestrator: Claude Code / Cursor Agent
 downstream_consumer: Agent (build + embed) + Human (deploy verify)
-version: 1.0.0
-last_updated: 2026-06-02
+version: 1.1.0
+last_updated: 2026-06-17
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/product-delivery/PRM-PDLV-006_static-guide-overview-video.md
 use_for: Build or rebuild a narrated overview video embedded in a static HTML product guide
 ---
@@ -22,6 +22,8 @@ Agent-optimized system prompt for a **single primary overview video** on documen
 **Reference pilot:** [mulesoft-claude-onboarding](https://github.com/m9751/mulesoft-claude-onboarding) — operational log: `demo-output/PROMPT_LOG.md`. Current deploy (`/demo-output/output.mp4`, three video beacons) is valid; this prompt governs future rebuilds only.
 
 **Packaging blueprint:** [docs/static-guide-video-packaging.md](../../docs/static-guide-video-packaging.md) — build pipeline, scene schema, layout library, extraction phases (pilot → reusable toolkit).
+
+**Toolkit pin:** `packages/static-guide-video/` @ `feat/static-guide-video-packaging` (PR #47). Build command: `toolkit/build_video.py --root <demo-output> --manifest scenes.json --brand <brand.json> [--captures captures.yaml]`. Pilot rebuild verified 2026-06-17 (59.9s, 9 beats).
 
 ## Prompt
 
@@ -67,7 +69,7 @@ IF any required field is missing: ENTER [ERROR_STATE: MISSING_INPUT], list missi
 - [CTA_COMPLIANCE] Apply CTA_Policy. Default: in-guide actions only. No external URLs in audio or visuals unless Project_Brief explicitly authorizes.
 
 ### B. Technical Build & Asset Pipeline
-- [EXECUTION: BUILD] Run the project-documented build command from Project_Brief or repo README (do not assume a fixed script name).
+- [EXECUTION: BUILD] Prefer `packages/static-guide-video/toolkit/build_video.py` when the project ships `scenes.json` + `captures.yaml`. Otherwise run the project-documented build command from Project_Brief or repo README.
 - [EXECUTION: FFMPEG] Final concat MUST re-encode. NEVER use stream-copy (-c copy) on the final mux.
 - [PRE-CONDITION: PATHS] Resolve asset paths per Scene_Spec before media pipelines run. IF missing assets: [ERROR_STATE: UNRESOLVED_DEPENDENCY] and HALT.
 - [EXECUTION: HTML_SYNC] After HTML edits, sync the file the live host actually serves (often index.html), not only local/staging variants.
