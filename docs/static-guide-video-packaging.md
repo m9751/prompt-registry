@@ -240,7 +240,7 @@ No MCP required for the proven pilot path.
 ### Phase 4 — Skill / install path
 - [x] New skill `static-guide-video` at `~/.grok/skills/static-guide-video/SKILL.md`
 - [x] Register in smokin-os platform catalog (PR #85 merged)
-- [x] Second pilot: [whiskey-down](https://github.com/m9751/whiskey-down) — 6 beats, 53.7s, dark brand via `brand.whiskey-down.json`
+- [ ] Second pilot on non-MuleSoft HTML guide (target TBD — requires explicit approval)
 
 ### Phase 5 — Distribution
 - [x] `prompt-registry/packages/static-guide-video/` (PR #47)
@@ -274,23 +274,11 @@ mulesoft-claude-onboarding/
 
 ---
 
-## 13. Decisions (resolved 2026-06-17)
+## 13. Decisions
 
-| # | Question | Decision | Rationale |
-|---|----------|----------|-----------|
-| 1 | Repo home | **`prompt-registry/packages/static-guide-video/`** | Co-located with PRM-PDLV-006; no separate repo until a second consumer needs independent release cadence |
-| 2 | Skill name | **`static-guide-video`** (canonical) | Pilot uses `scenes.json` SSOT + embed/beacon kit; bundled `demo-video` skill does not match |
-| 3 | Second pilot | **`whiskey-down`** | Non-MuleSoft brand, live Vercel host, tab navigation maps cleanly to `captures.yaml`; verified 53.7s / 127 words |
-| 4 | NotebookLM Video Overview | **Separate PRM** | Different input contract (notebook corpus → Gemini video); do not fold into this Playwright/TTS/ffmpeg toolkit |
-
-### Second pilot file map
-
-```
-whiskey-down/
-└── demo-output/
-    ├── scenes.json
-    ├── captures.yaml → symlink or copy from prompt-registry/pilots/whiskey-down/
-    └── output.mp4      (local build artifact; not committed)
-```
-
-Pilot captures + brand live in `packages/static-guide-video/pilots/whiskey-down/` and `schema/brand.whiskey-down.json`.
+| # | Question | Status | Decision / notes |
+|---|----------|--------|------------------|
+| 1 | Repo home | **Resolved** | **`prompt-registry/packages/static-guide-video/`** — co-located with PRM-PDLV-006 |
+| 2 | Skill name | **Resolved** | **`static-guide-video`** (canonical) — not `demo-video` |
+| 3 | Second pilot | **Open** | Which HTML guide? Requires explicit approval before touching any target repo |
+| 4 | NotebookLM Video Overview | **Resolved** | **Separate PRM** — different input contract; not this toolkit |
