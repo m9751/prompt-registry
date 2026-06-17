@@ -1,0 +1,43 @@
+# Dependabot auto-merge — patch bumps only.
+# Best-practice source: smokin-knowledge/github/references/github-dependency-management.md
+#   § Auto-Approve / Auto-Merge Pattern (auto-approve patch+minor, auto-MERGE patch only).
+# Security: actions-security Hard Rule #2 (third-party action SHA-pinned) +
+#   explicit least-privilege permissions block.
+# Requires (repo settings, out of band): allow_auto_merge=true AND a required status
+#   check on main (Validate & Compile) — otherwise --auto merges instantly with no gate.
+name: Dependabot auto-merge
+
+on: pull_request_target
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    # Only act on Dependabot's own PRs.
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@0fb21704c18a42ce5aa8d720ea4b912f5e6babef  # v2.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Auto-approve patch AND minor (lower risk). Major still needs a human.
+      - name: Auto-approve patch and minor updates
+        if: ${{ steps.meta.outputs.update-type == 'version-update:semver-patch' || steps.meta.outputs.update-type == 'version-update:semver-minor' }}
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Auto-MERGE patch only. --auto waits for required checks before merging
+      # (when branch protection requires Validate & Compile).
+      - name: Enable auto-merge for patch updates
+        if: ${{ steps.meta.outputs.update-type == 'version-update:semver-patch' }}
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
