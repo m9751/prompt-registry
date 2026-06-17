@@ -246,7 +246,7 @@ No MCP required for the proven pilot path.
 - [x] `prompt-registry/packages/static-guide-video/` (PR #47)
 - [x] Pilot rebuild verified with `build_video.py` (2026-06-17: 59.9s, 9 beats, re-encoded concat)
 - [x] PRM-PDLV-006 references toolkit version pin (v1.1.0)
-- [ ] Merge PR #47
+- [x] Merge PR #47 (merged 2026-06-17)
 
 ---
 

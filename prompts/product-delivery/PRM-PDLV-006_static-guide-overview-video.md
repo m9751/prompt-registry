@@ -23,7 +23,7 @@ Agent-optimized system prompt for a **single primary overview video** on documen
 
 **Packaging blueprint:** [docs/static-guide-video-packaging.md](../../docs/static-guide-video-packaging.md) — build pipeline, scene schema, layout library, extraction phases (pilot → reusable toolkit).
 
-**Toolkit pin:** `packages/static-guide-video/` @ `feat/static-guide-video-packaging` (PR #47). Build command: `toolkit/build_video.py --root <demo-output> --manifest scenes.json --brand <brand.json> [--captures captures.yaml]`. Pilot rebuild verified 2026-06-17 (59.9s, 9 beats).
+**Toolkit pin:** `packages/static-guide-video/` on `main` (merged PR #47). Build command: `toolkit/build_video.py --root <demo-output> --manifest scenes.json --brand <brand.json> [--captures captures.yaml]`. Pilot rebuild verified 2026-06-17 (59.9s, 9 beats).
 
 ## Prompt
 
