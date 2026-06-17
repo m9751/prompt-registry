@@ -17,6 +17,7 @@ if str(_TOOLKIT) not in sys.path:
     sys.path.insert(0, str(_TOOLKIT))
 
 from capture_runner import load_captures, run_captures  # noqa: E402
+from layouts import LAYOUT_WAITS, body_class, render_inner  # noqa: E402
 
 DEFAULT_BASE_CSS = """
 :root{--blue-20:#032D60;--blue-50:#0176D3;--blue-95:#EEF4FF;--cloud-60:#0D9DDA;--orange-70:#FE9339;--red:#EA001E;
@@ -34,17 +35,6 @@ body.light{background:var(--blue-95);color:var(--blue-20)}
 body.dark .logo{filter:brightness(0) invert(1)}
 .pad{padding:56px 72px;height:100%;display:flex;flex-direction:column}
 """
-
-LAYOUT_WAITS = {
-    "kinetic_pain": 1500,
-    "kinetic_outcomes": 1200,
-    "cta_inguide": 1300,
-    "editor_tabs": 1100,
-    "proof_highlight": 1400,
-    "depth_tabs": 1200,
-    "cta_steps": 1200,
-}
-
 
 class BuildContext:
     def __init__(
@@ -69,7 +59,9 @@ class BuildContext:
         self.scenes = manifest["scenes"]
         self.hero = manifest.get("hero_silent")
         self.base_css = self._build_base_css()
-        self.logo_src = (brand or {}).get("logo", "../../mulesoft-logo.png")
+        self.logo_src = (brand or {}).get("logo", "../../mulesoft-logo.png") if brand else "../../mulesoft-logo.png"
+        if brand and brand.get("logo") is None:
+            self.logo_src = ""
 
     def _build_base_css(self) -> str:
         accent = "linear-gradient(90deg, var(--cloud-60), var(--orange-70))"
@@ -98,149 +90,13 @@ class BuildContext:
             d.mkdir(parents=True, exist_ok=True)
 
 
-def img_src(path: str) -> str:
-    if not path:
-        return ""
-    if path.startswith("../screenshots"):
-        return "../../screenshots/" + path.split("/", 2)[-1]
-    if path.startswith("../"):
-        return path
-    return f"../{path}"
-
-
 def write_scene_html(ctx: BuildContext, scene: dict) -> None:
-    layout = scene.get("layout", "image")
-    kind = scene.get("kind", "content")
-    dark = kind == "title" or layout in ("kinetic_pain", "cta_inguide")
-    body = "dark" if dark else "light"
-    title = scene.get("title", "")
-    subtitle = scene.get("subtitle", "")
-    image = img_src(scene.get("image", ""))
-
-    inner = ""
-    if layout == "kinetic_pain":
-        inner = """
-<div class="pad" style="justify-content:center;align-items:center;text-align:center">
-  <div style="font-size:120px;font-weight:800;color:#fff;animation:pop .5s cubic-bezier(.16,1,.3,1) both">847 lines</div>
-  <div style="display:flex;gap:14px;justify-content:center;margin-top:28px;flex-wrap:wrap">
-    <span style="padding:10px 18px;border-radius:20px;border:1px solid var(--red);color:#FFB3BC;background:rgba(234,0,30,.15);font-weight:700;animation:fadeUp .5s .15s both">No tests</span>
-    <span style="padding:10px 18px;border-radius:20px;border:1px solid var(--orange-70);color:#FFE2C8;background:rgba(254,147,57,.15);font-weight:700;animation:fadeUp .5s .25s both">Schema drift</span>
-    <span style="padding:10px 18px;border-radius:20px;border:1px solid #CFE9FE;color:#CFE9FE;font-weight:700;animation:fadeUp .5s .35s both">FIXME</span>
-  </div>
-  <p style="font-size:28px;color:#CFE9FE;margin-top:40px;animation:fadeUp .5s .4s both">Five portals <span style="color:var(--orange-70)">→</span> <strong style="color:var(--cloud-60)">one editor</strong></p>
-</div>"""
-    elif layout == "split_imagine":
-        inner = f"""
-<div class="pad" style="flex-direction:row;gap:40px;align-items:center">
-  <div style="flex:1;animation:slideL .6s cubic-bezier(.16,1,.3,1) both">
-    <h1 style="font-size:52px;font-weight:700;line-height:1.1">{title}</h1>
-    <p style="font-size:28px;color:#5C6A7F;margin-top:16px">{subtitle}</p>
-    <p style="font-size:22px;color:var(--blue-50);margin-top:28px;font-weight:600">EHRs · Claims · Legacy APIs → one editor</p>
-  </div>
-  <div style="flex:1.2;animation:fadeUp .6s .2s both">
-    <img src="{image}" style="width:100%;border-radius:8px;border:1px solid #CFE9FE;box-shadow:0 4px 16px rgba(3,45,96,.14)"/>
-  </div>
-</div>"""
-    elif layout == "kinetic_outcomes":
-        inner = f"""
-<div class="pad">
-  <div style="display:flex;gap:20px;margin-bottom:24px;flex-wrap:wrap">
-    <span style="font-size:28px;font-weight:800;color:var(--blue-20);background:#fff;padding:14px 22px;border-radius:8px;border:1px solid #CFE9FE;animation:pop .4s both">Search Exchange</span>
-    <span style="font-size:28px;font-weight:800;color:var(--blue-20);background:#fff;padding:14px 22px;border-radius:8px;border:1px solid #CFE9FE;animation:pop .4s .1s both">Scaffold flows</span>
-    <span style="font-size:28px;font-weight:800;color:var(--blue-20);background:#fff;padding:14px 22px;border-radius:8px;border:1px solid #CFE9FE;animation:pop .4s .2s both">Deploy</span>
-  </div>
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;animation:fadeUp .55s .3s both">
-    <img src="{image}" style="max-height:720px;max-width:100%;border-radius:8px;border:1px solid #CFE9FE;box-shadow:0 4px 16px rgba(3,45,96,.14)"/>
-  </div>
-</div>"""
-    elif layout == "editor_tabs":
-        inner = f"""
-<div class="pad" style="justify-content:center">
-  <p style="font-size:32px;font-weight:700;margin-bottom:20px;animation:fadeUp .5s both">Pick your editor</p>
-  <div style="display:flex;gap:16px;margin-bottom:28px;animation:fadeUp .5s .12s both">
-    <span style="background:var(--blue-50);color:#fff;padding:14px 28px;border-radius:8px;font-size:22px;font-weight:700">Claude Code</span>
-    <span style="background:var(--orange-70);color:#032D60;padding:14px 28px;border-radius:8px;font-size:22px;font-weight:700">Cursor</span>
-    <span style="background:#fff;color:var(--blue-20);padding:14px 22px;border-radius:8px;font-size:18px;font-weight:600;border:1px solid #CFE9FE">Same 18 tools</span>
-  </div>
-  <div style="flex:1;display:flex;align-items:flex-start;animation:fadeUp .55s .22s both">
-    <img src="{image}" style="width:100%;border-radius:8px;border:1px solid #CFE9FE;box-shadow:0 4px 16px rgba(3,45,96,.14)"/>
-  </div>
-</div>"""
-    elif layout == "proof_highlight":
-        badges = scene.get("badges", [])
-        badge_html = "".join(
-            f'<span style="padding:12px 20px;border-radius:8px;font-size:20px;font-weight:700;'
-            f'animation:pop .45s {0.12+i*0.1:.2f}s both;{b.get("style","")}">{b["text"]}</span>'
-            for i, b in enumerate(badges)
-        )
-        cursor = ""
-        if scene.get("faux_cursor"):
-            cursor = """<div style="position:absolute;left:32%;top:42%;width:32px;height:32px;border-radius:50%;
-              background:#41B658;border:3px solid #fff;animation:pulse 1.4s ease-in-out infinite;z-index:5"></div>"""
-        scan = ""
-        if scene.get("scan_highlight"):
-            scan = """<div style="position:absolute;left:8%;right:8%;top:35%;height:38%;
-              border:3px solid var(--orange-70);border-radius:6px;animation:fadeUp .4s .25s both;pointer-events:none"></div>"""
-        inner = f"""
-<div class="pad" style="justify-content:flex-start">
-  <h1 style="font-size:42px;font-weight:700;animation:fadeUp .45s both">{title}</h1>
-  <p style="font-size:22px;color:#5C6A7F;margin-top:8px;animation:fadeUp .45s .08s both">{subtitle}</p>
-  <div style="display:flex;gap:14px;margin:14px 0 10px;flex-wrap:wrap">{badge_html}</div>
-  <div style="flex:1;position:relative;display:flex;align-items:center;justify-content:center;background:#fff;
-    border-radius:8px;border:2px solid var(--blue-50);padding:14px;box-shadow:0 8px 28px rgba(3,45,96,.18);
-    animation:fadeUp .5s .12s both;min-height:520px">
-    <img src="{image}" style="max-height:100%;max-width:100%;display:block"/>
-    {cursor}{scan}
-  </div>
-</div>"""
-    elif layout == "depth_tabs":
-        img2 = img_src(scene.get("image2", ""))
-        inner = f"""
-<div class="pad">
-  <p style="font-size:30px;font-weight:700;animation:fadeUp .45s both">Script → Flow · Salesforce architecture</p>
-  <div style="flex:1;position:relative;margin-top:16px;animation:fadeUp .5s .15s both">
-    <img src="{image}" style="width:100%;max-height:620px;border-radius:8px;border:1px solid #CFE9FE"/>
-    <img src="{img2}" style="position:absolute;top:12px;right:12px;width:34%;border-radius:8px;border:2px solid var(--orange-70);
-      box-shadow:0 6px 20px rgba(3,45,96,.2);animation:pop .5s .35s both"/>
-  </div>
-</div>"""
-    elif layout == "cta_steps":
-        inner = f"""
-<div class="pad" style="justify-content:center">
-  <div style="display:flex;flex-direction:column;gap:18px;margin-bottom:24px;align-items:center">
-    <span style="font-size:32px;font-weight:800;background:var(--blue-50);color:#fff;padding:18px 36px;border-radius:8px;animation:pop .4s both">PICK TAB</span>
-    <span style="font-size:32px;font-weight:800;background:#fff;color:var(--blue-20);padding:18px 36px;border-radius:8px;border:2px solid #0176D3;animation:pop .4s .12s both">RUN SETUP</span>
-    <span style="font-size:32px;font-weight:800;background:var(--orange-70);color:#032D60;padding:18px 36px;border-radius:8px;animation:pop .4s .24s both">PROVE EXCHANGE</span>
-  </div>
-  <div style="flex:1;animation:fadeUp .5s .3s both"><img src="{image}" style="width:100%;border-radius:8px;border:1px solid #CFE9FE"/></div>
-</div>"""
-    elif layout == "cta_inguide":
-        inner = f"""
-<div class="pad" style="justify-content:center;align-items:center;text-align:center">
-  <div style="font-size:56px;font-weight:800;animation:pop .5s both">You are in the guide.</div>
-  <div style="display:flex;gap:20px;margin-top:32px;animation:fadeUp .55s .15s both">
-    <span style="background:var(--blue-50);color:#fff;padding:16px 24px;border-radius:8px;font-size:24px;font-weight:700">Pick tab</span>
-    <span style="background:rgba(255,255,255,.12);border:1px solid #CFE9FE;padding:16px 24px;border-radius:8px;font-size:24px">Run setup</span>
-    <span style="background:rgba(255,255,255,.12);border:1px solid #CFE9FE;padding:16px 24px;border-radius:8px;font-size:24px">Prove with Exchange</span>
-  </div>
-  <div style="margin-top:36px;width:100%;animation:fadeUp .6s .28s both">
-    <img src="{image}" style="width:100%;max-height:420px;object-fit:cover;object-position:top;border-radius:8px;opacity:.95"/>
-  </div>
-</div>"""
-    else:
-        inner = f"""
-<div class="pad">
-  <h1 style="font-size:48px;font-weight:700;animation:fadeUp .5s both">{title}</h1>
-  <p style="font-size:26px;color:#5C6A7F;margin-top:12px;animation:fadeUp .5s .1s both">{subtitle}</p>
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;margin-top:20px;animation:fadeUp .55s .2s both">
-    <img src="{image}" style="max-height:740px;max-width:100%;border-radius:8px;border:1px solid #CFE9FE;box-shadow:0 4px 16px rgba(3,45,96,.14)"/>
-  </div>
-</div>"""
-
-    logo = ctx.logo_src
+    body = body_class(scene)
+    inner = render_inner(scene)
+    logo_tag = f'<img class="logo" src="{ctx.logo_src}" alt=""/>' if ctx.logo_src else ""
     html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8"/><style>{ctx.base_css}</style></head>
 <body class="{body}"><div class="accent-bar"></div>
-<img class="logo" src="{logo}" alt=""/>{inner}</body></html>"""
+{logo_tag}{inner}</body></html>"""
     (ctx.scenes_dir / f"{scene['id']}.html").write_text(html, encoding="utf-8")
 
 

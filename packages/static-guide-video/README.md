@@ -12,6 +12,8 @@ Reusable toolkit extracted from the [mulesoft-claude-onboarding](https://github.
 | Build engine | `toolkit/build_video.py` |
 | Capture runner | `toolkit/capture_runner.py` |
 | Pilot captures | `pilots/mulesoft-claude-onboarding/captures.yaml` |
+| Second pilot | `pilots/whiskey-down/captures.yaml` + `schema/brand.whiskey-down.json` |
+| Layout modules | `toolkit/layouts/` (one file per layout type) |
 | Smoke test template | `templates/smoke-test.sh` |
 
 ## Quick start (pilot rebuild)

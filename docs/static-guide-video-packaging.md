@@ -1,6 +1,6 @@
 # Static Guide Overview Video — Packaging Blueprint
 
-**Status:** Phase 3–4 in progress (toolkit verified; PR #47 open)
+**Status:** Phase 2–4 complete; Phase 5 shipped (PR #47 merged)
 **Last updated:** 2026-06-17
 **Pilot:** [mulesoft-claude-onboarding](https://github.com/m9751/mulesoft-claude-onboarding)
 **Agent prompt:** `PRM-PDLV-006` (`prompts/product-delivery/PRM-PDLV-006_static-guide-overview-video.md`)
@@ -229,7 +229,7 @@ No MCP required for the proven pilot path.
 
 ### Phase 2 — Extract schema + layouts
 - [x] Publish `scenes.schema.json` (+ `captures.schema.json`, `brand.example.json` in `packages/static-guide-video/schema/`)
-- [ ] Split layouts into modules
+- [x] Split layouts into `toolkit/layouts/` modules (one file per layout type)
 - [x] Add `brand.json` injection in build engine (`--brand` flag in `build_video.py`)
 
 ### Phase 3 — Genericize engine
@@ -239,8 +239,8 @@ No MCP required for the proven pilot path.
 
 ### Phase 4 — Skill / install path
 - [x] New skill `static-guide-video` at `~/.grok/skills/static-guide-video/SKILL.md`
-- [x] Register in smokin-os platform catalog (PR smokin-os `docs/static-guide-video-catalog`)
-- [ ] Second pilot on non-MuleSoft HTML guide
+- [x] Register in smokin-os platform catalog (PR #85 merged)
+- [x] Second pilot: [whiskey-down](https://github.com/m9751/whiskey-down) — 6 beats, 53.7s, dark brand via `brand.whiskey-down.json`
 
 ### Phase 5 — Distribution
 - [x] `prompt-registry/packages/static-guide-video/` (PR #47)
@@ -274,9 +274,23 @@ mulesoft-claude-onboarding/
 
 ---
 
-## 13. Open decisions
+## 13. Decisions (resolved 2026-06-17)
 
-1. Repo home: new `static-guide-video` vs `prompt-registry/packages/`?
-2. Skill name: `static-guide-video` vs extend `demo-video`?
-3. Second pilot: which HTML guide next?
-4. NotebookLM Video Overview path: same package or separate PRM?
+| # | Question | Decision | Rationale |
+|---|----------|----------|-----------|
+| 1 | Repo home | **`prompt-registry/packages/static-guide-video/`** | Co-located with PRM-PDLV-006; no separate repo until a second consumer needs independent release cadence |
+| 2 | Skill name | **`static-guide-video`** (canonical) | Pilot uses `scenes.json` SSOT + embed/beacon kit; bundled `demo-video` skill does not match |
+| 3 | Second pilot | **`whiskey-down`** | Non-MuleSoft brand, live Vercel host, tab navigation maps cleanly to `captures.yaml`; verified 53.7s / 127 words |
+| 4 | NotebookLM Video Overview | **Separate PRM** | Different input contract (notebook corpus → Gemini video); do not fold into this Playwright/TTS/ffmpeg toolkit |
+
+### Second pilot file map
+
+```
+whiskey-down/
+└── demo-output/
+    ├── scenes.json
+    ├── captures.yaml → symlink or copy from prompt-registry/pilots/whiskey-down/
+    └── output.mp4      (local build artifact; not committed)
+```
+
+Pilot captures + brand live in `packages/static-guide-video/pilots/whiskey-down/` and `schema/brand.whiskey-down.json`.

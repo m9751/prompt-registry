@@ -1,0 +1,39 @@
+base_url: https://whiskey-down.vercel.app/
+viewport:
+  width: 1920
+  height: 1080
+steps:
+  - action: goto
+    url: "/"
+    wait_until: networkidle
+  - action: screenshot
+    file: capture-tab-bar.png
+    ms: 800
+  - action: screenshot_locator
+    selector: "#tab-live"
+    file: capture-live-tab.png
+    ms: 1200
+  - action: click
+    selector: '.tab[data-tab="signals"]'
+  - action: wait
+    ms: 800
+  - action: screenshot_locator
+    selector: "#tab-signals"
+    file: capture-signals-tab.png
+    ms: 1200
+  - action: click
+    selector: '.tab[data-tab="gauntlet"]'
+  - action: wait
+    ms: 800
+  - action: screenshot_locator
+    selector: "#tab-gauntlet"
+    file: capture-gauntlet-tab.png
+    ms: 1200
+  - action: click
+    selector: '.tab[data-tab="stats"]'
+  - action: wait
+    ms: 800
+  - action: screenshot_locator
+    selector: "#tab-stats"
+    file: capture-stats-tab.png
+    ms: 1200
