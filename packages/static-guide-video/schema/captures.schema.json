@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/m9751/prompt-registry/packages/static-guide-video/schema/captures.schema.json",
+  "title": "Static Guide Overview Video \u2014 Live Capture Script",
+  "type": "object",
+  "required": [
+    "base_url",
+    "steps"
+  ],
+  "properties": {
+    "base_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "viewport": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer"
+        },
+        "height": {
+          "type": "integer"
+        }
+      },
+      "default": {
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "goto",
+              "click",
+              "scroll",
+              "wait",
+              "screenshot",
+              "screenshot_locator"
+            ]
+          },
+          "url": {
+            "type": "string"
+          },
+          "selector": {
+            "type": "string"
+          },
+          "scroll": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "file": {
+            "type": "string",
+            "description": "Output PNG filename under captures/"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/m9751/prompt-registry/packages/static-guide-video/schema/scenes.schema.json",
+  "title": "Static Guide Overview Video \u2014 Scene Manifest",
+  "description": "Story contract for build_video.py pipeline. Pilot reference: mulesoft-claude-onboarding/demo-output/scenes.json",
+  "type": "object",
+  "required": [
+    "title",
+    "edition",
+    "voice",
+    "scenes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "edition": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "voice": {
+      "type": "string",
+      "description": "edge-tts voice id, e.g. en-US-AndrewNeural"
+    },
+    "base_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Live guide URL for Playwright captures"
+    },
+    "brand": {
+      "type": "object",
+      "properties": {
+        "logo": {
+          "type": "string"
+        },
+        "css_vars": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "hero_silent": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "duration_per_beat": {
+          "type": "number",
+          "minimum": 1
+        },
+        "beats": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/heroBeat"
+          }
+        }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/scene"
+      }
+    }
+  },
+  "$defs": {
+    "badge": {
+      "type": "object",
+      "required": [
+        "text",
+        "style"
+      ],
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "style": {
+          "type": "string",
+          "description": "Inline CSS for badge chip"
+        }
+      }
+    },
+    "heroBeat": {
+      "type": "object",
+      "required": [
+        "id",
+        "image"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 1
+        },
+        "image": {
+          "type": "string"
+        },
+        "ken_burns": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "scene": {
+      "type": "object",
+      "required": [
+        "id",
+        "layout",
+        "duration",
+        "kind",
+        "narration"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9]{2}-[a-z0-9-]+$"
+        },
+        "layout": {
+          "type": "string",
+          "enum": [
+            "kinetic_pain",
+            "split_imagine",
+            "kinetic_outcomes",
+            "proof_highlight",
+            "editor_tabs",
+            "depth_tabs",
+            "cta_steps",
+            "cta_inguide",
+            "image"
+          ]
+        },
+        "duration": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "title",
+            "content"
+          ]
+        },
+        "narration": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "image2": {
+          "type": "string",
+          "description": "Second image for depth_tabs layout"
+        },
+        "badges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/badge"
+          }
+        },
+        "ken_burns": {
+          "type": "boolean",
+          "default": false
+        },
+        "faux_cursor": {
+          "type": "boolean",
+          "default": false
+        },
+        "scan_highlight": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+}
