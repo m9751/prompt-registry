@@ -18,4 +18,5 @@
 | `docs/SECURITY.md` | PAT scope and external access |
 | `docs/rca-divergence-2026-06-02.md` | Orphan-main initialization RCA |
 | `docs/PRM-CDXP-002-iterations.md` | PRM-CDXP-002 prompt iteration log |
+| `spec/wart-prm-model-code-vs-domain-folder.md` | Known design wart: PRM `<MODEL>` ID code does not map to domain folder; deferred to future session |
 | `prompts/<domain>/AGENTS.md` | Per-domain routing intent (feeds `domains.json`) |
