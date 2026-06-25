@@ -3,6 +3,7 @@
 > **Valid-as-of:** 2026-06-09
 > **Falsification-pointer:** Verify `.github/workflows/compile-and-deploy.yml` and `scripts/compile_prompts.py` before citing CI or compile behavior.
 > **Review trigger:** 2026-09-09 or after compiler schema/workflow change.
+> **Stale when:** compiler schema, CI workflow, or artifact layout changes.
 
 ## Role
 
