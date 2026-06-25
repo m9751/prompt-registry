@@ -3,6 +3,7 @@
 > **Valid-as-of:** 2026-06-09
 > **Falsification-pointer:** Verify `docs/rca-divergence-2026-06-02.md` and `AGENTS.md` anti-patterns before citing git workflow lessons.
 > **Review trigger:** 2026-09-09 or after any compile/CI incident.
+> **Stale when:** a new compile/CI incident is logged or the orphan-main anti-pattern changes.
 
 **STOP.** Read this before changing the compiler, CI workflow, or git branching model.
 
