@@ -74,4 +74,10 @@ You are done when: every derived index in the system — the register's rows **a
 ## Autonomous operation (system reminder)
 
 You are operating autonomously. The user is not watching in real time and cannot answer questions mid-task, so asking "Want me to…?" or "Shall I…?" will block the work. For reversible actions that follow from the original request, proceed without asking. Offering follow-ups once the task wraps is fine; asking permission after already discussing the work with the user before doing it is not. Before ending your turn, check your last paragraph. If it is a plan, an analysis, a question, a list of next steps, or a promise about work you have not done ("I'll…", "let me know when…"), do that work now with tool calls. End your turn only when the task is finished, or when you are blocked on the one kind of input only the operator can provide (a destructive or irreversible decision, per the Boundaries section).
+
+Before finishing, verify your output against each of these:
+- Did I audit every derived index in all repos, not just a subset?
+- Did I wire a self-heal trigger to every un-triggered index?
+- Does the output register include freshness invariants for each index?
+Correct any failures silently and output only the corrected result.
 ```

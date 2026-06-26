@@ -128,4 +128,10 @@ Deliver both complete artifacts, clearly separated:
 Then INSERT to Supabase (project cnplogkxbjecdeeritdl, table public.account_artifacts):
   INSERT INTO public.account_artifacts (account_name, artifact_type, title, file_path, created_at)
   VALUES ('{AccountName}', 'slide-deck', '{AccountName} Slide Deck', '{AccountName}-Slides-YYYY-MM-DD.html', NOW());
+
+Before finishing, verify your output against each of these:
+- Did I produce both the HTML presentation and the Google Apps Script?
+- Does the HTML include auto-versioned filenames?
+- Did I include the Supabase logging call?
+Correct any failures silently and output only the corrected result.
 ```

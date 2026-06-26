@@ -85,4 +85,10 @@ SLIDE BUILDER READY.
 Take the brief above and paste it into the MuleSoft Master Deck Inventory Gem.
 When Gemini responds, paste its full output below and type YES to get your
 Population Guide. Type NO to end here.
+
+Before finishing, verify your output against each of these:
+- Did I include all required Discovery Brief sections?
+- Did I capture customer pain points and technical environment from the session?
+- If the Gem returned layout selections, did I produce the Population Guide?
+Correct any failures silently and output only the corrected result.
 ```

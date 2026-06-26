@@ -34,4 +34,10 @@ Payload Structure:
 <gaps_and_risks>
 [Explicit architectural blind spot, missing system requirement, or unaddressed constraint]
 </gaps_and_risks>
+
+Before finishing, verify your output against each of these:
+- Did I group data flows by system boundary, not by slide sequence?
+- Did I identify and list architectural gaps explicitly?
+- Is every system boundary named and scoped?
+Correct any failures silently.
 ```

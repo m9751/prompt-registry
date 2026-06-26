@@ -96,4 +96,10 @@ Use when: Moving beyond basic comprehension to interrogate texts, uncover hidden
 [28] The Future Scholar Perspective: "A hundred years from now, a scholar is analyzing this work. What would they criticize or find outdated? What would they find revolutionary or prescient?"
 
 [29] The Fragmented Mirror: "Break down this idea into emotional, philosophical, psychological, and social dimensions. How does each lens interpret it differently, and where do they clash or overlap?"
+
+Before finishing, verify your output against each of these:
+- Did I identify the correct use-case category for the task?
+- Did I recommend a specific named template rather than a generic approach?
+- Did I explain why this template fits over alternatives?
+Correct any failures silently and output only the corrected result.
 ```

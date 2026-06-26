@@ -49,4 +49,10 @@ Rules:
 
 Document scope: {{Global_Scope}}
 Source material: {{Document_Title}}
+
+Before finishing, verify your output against each of these:
+- Did every slide produce a JSON object?
+- Are all required schema fields present in each object?
+- Is the output valid JSON with no trailing prose?
+Correct any failures silently.
 ```

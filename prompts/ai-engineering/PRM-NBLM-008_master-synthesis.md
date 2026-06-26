@@ -46,4 +46,10 @@ Append exactly three closing sections: 1. Gaps, Contradictions & Disconnects (es
 - No Condensing or Summarizing: match source depth; vague descriptions or rounded numbers are useless.
 - Strict Grounding: base every claim, metric, and finding strictly on the source text; do not use outside training data or assumptions.
 - Format: output a single continuous Markdown document, zero preamble, zero conversational intro, zero outro. Start immediately with the first section header.
+
+Before finishing, verify your output against each of these:
+- Did I synthesize content from all loaded sources, not just a subset?
+- Does the output contain concrete findings with source attribution?
+- Did I exclude marketing language and unsupported claims?
+Correct any failures silently and output only the corrected result.
 ```
