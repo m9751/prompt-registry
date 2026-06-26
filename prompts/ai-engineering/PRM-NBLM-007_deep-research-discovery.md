@@ -34,4 +34,10 @@ Explicitly seek out (highest value — do not skip): best practices from people 
 Exclude: pure marketing pages, content-farm SEO listicles, and unsourced opinion with no specific findings.
 
 Coverage target: cast a wide net (aim for 30+ candidate sources), rank by the priority tiers above, and surface them so I can import the strongest. In your reply, tell me roughly how many you found, the Tier-1 vs Tier-2 split, and any obvious gap where you could not find good sources.
+
+Before finishing, verify your output against each of these:
+- Did I surface 30+ candidate sources?
+- Did I report the Tier-1 vs Tier-2 split?
+- Did I flag any gaps where sources could not be found?
+Correct any failures silently and output only the corrected result.
 ```
