@@ -145,4 +145,10 @@ In both cases: preserve all technical detail — never truncate content to maint
   --green-65: #41B658;
   --font-family: 'Salesforce Sans', 'SF Pro Display', Arial, sans-serif;
 }
+
+Before finishing, verify your output against each of these:
+- Did I produce exactly 6 slides?
+- Is each slide written for a CIO audience (business outcomes, not technical detail)?
+- Does every slide content trace back to the input brief?
+Correct any failures silently and output only the corrected result.
 ```

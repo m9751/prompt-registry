@@ -33,4 +33,10 @@ Rules:
 - Keep the entire output under 500 words.
 
 Source material: {{Document_Title}}
+
+Before finishing, verify your output against each of these:
+- Did I cover every major section of the source deck?
+- Is the output written for a human reader (no raw bullet dumps or technical jargon)?
+- Did I include a clear bottom-line finding?
+Correct any failures silently and output only the corrected result.
 ```

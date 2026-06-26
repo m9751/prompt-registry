@@ -112,4 +112,10 @@ Return ONLY the checklist below (each value on a single line; no line breaks ins
 - [ ] Tracking events unchanged: <list>
 - [ ] Known deviations: None | <list>
 - [ ] Error states triggered: None | <list>
+
+Before finishing, verify your output against each of these:
+- Did I produce a scene-by-scene narration script?
+- Does every scene reference a specific section or element of the HTML guide?
+- Did I include the embed code for the video in the HTML?
+Correct any failures silently and output only the corrected result.
 ```

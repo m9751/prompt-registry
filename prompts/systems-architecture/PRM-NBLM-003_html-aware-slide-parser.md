@@ -45,4 +45,10 @@ Rules:
 - Encode special characters (&, <, >) as XML entities.
 - If a slide has no title, use <title>Untitled</title>.
 - Validate that the output would parse without errors before returning it.
+
+Before finishing, verify your output against each of these:
+- Did every slide in the source produce a corresponding XML element?
+- Is the XML well-formed with no unclosed tags?
+- Did I exclude all presentation styling from the XML output?
+Correct any failures silently.
 ```

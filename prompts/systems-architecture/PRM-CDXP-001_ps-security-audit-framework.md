@@ -470,4 +470,10 @@ Do not provide remediation code.
 Do not claim certainty where the endpoint cannot provide authoritative evidence.
 
 Prefer explicit limitations and Indeterminate findings over unsupported compliance conclusions.
+
+Before finishing, verify your output against each of these:
+- Is the script strictly non-remediating (read-only, no changes to system state)?
+- Does it cover all 4 audit domains (application control/CLM, security policy, audit policy/telemetry, JEA)?
+- Does it produce structured output suitable for downstream analysis?
+Correct any failures silently and output only the corrected result.
 ```

@@ -511,6 +511,12 @@ Return markdown in this order:
 Primary output ends at §14. Do not embed prompt score or miss feedback inside §0–§14.
 
 Keep prose sections under 260 lines. §13 JSON is exempt from line cap. If P0 count exceeds 5, sections 6–8 may expand; abbreviate section 12 first, never §13.
+
+Before finishing, verify your output against each of these:
+- Did I produce an AERR scorecard with scores for each metric?
+- Did I limit the audit to structural readiness (not business logic)?
+- Did I flag every missing required structural element?
+Correct any failures silently and output only the corrected result.
 </structured_output_contract>
 
 <registry_feedback>
