@@ -51,6 +51,7 @@
 - [ ] `python scripts/compile_prompts.py` ran locally with zero errors
 - [ ] Spot-checked: opened `dist/prompts_latest.json`, confirmed this prompt's `prompt_text` ends with the feedback footer (`Score this prompt: 1 / 2 / 3`)
 - [ ] `dist/prompts_latest.json` included in this PR
+- [ ] `README.md` included in this PR — compiler regenerates the catalog table; **staging only the `.md` source and omitting `README.md` leaves the repo page showing a stale version** (incident 2026-06-25)
 - [ ] README catalog auto-regenerated (no manual edits to the catalog section)
 - [ ] **If adding a new domain:** added domain to `domain_order` in `compile_prompts.py`, `domain_labels` dict, `AGENTS.md` enum list, and `prompt_schema.json` enum — compiler will hard-fail CI if any of these are missing
 - [ ] `version` field incremented in frontmatter per SemVer rules
