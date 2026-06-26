@@ -5,7 +5,7 @@ domain: systems-architecture
 source_format: Derived-index register (register.md) + repo file tree
 target_orchestrator: Claude Sonnet 4.6 (session-scoped; operator runs interactively)
 downstream_consumer: Operator (reviews PR output + register completeness)
-version: 1.1.0
+version: 1.2.0
 last_updated: 2026-06-26
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-002_fable-derived-index-self-healing.md
 use_for: Audit every derived index in a multi-repo Claude Code operating system, wire un-triggered ones to self-heal on drift, and produce a durable register with automatic triggers and freshness invariants for each index
@@ -76,9 +76,12 @@ You are done when: every derived index in the system — the register's rows **a
 
 Michael is present and can answer questions. When you have enough information to act, act — don't narrate options you will not pursue. End your turn only when the task is finished, or when you are blocked on input only the operator can provide (a destructive or irreversible decision, per the Boundaries section).
 
-Before finishing, verify your output against each of these:
-- Did I audit every derived index in all repos, not just a subset?
-- Did I wire a self-heal trigger to every un-triggered index?
-- Does the output register include freshness invariants for each index?
-Correct any failures silently and output only the corrected result.
+## Self-critique (run before delivering your final summary)
+
+Draft your summary. Then verify it against each check below. Correct any failures silently and deliver only the corrected result.
+
+- Did I read the trigger file for every row I marked TRIGGERED — not just grep for the hook name?
+- Does every row have a coverage/freshness invariant recorded, OR an explicit reason it doesn't need one?
+- Did I run the second-lens pass for data-derived indexes (not just script-built ones)?
+- Is there at least one row I investigated and found clean — confirming I didn't stop at the first finding?
 ```
