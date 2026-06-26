@@ -70,6 +70,24 @@ Use {{Variable_Name}} for placeholders.
 ```
 ````
 
+### 4a. Add a self-critique block inside the fence (mandatory)
+
+Every prompt must end its fenced block with a self-critique block — 2 to 3 binary checks specific to what this prompt is required to produce. Place it immediately before the closing ` ``` `.
+
+```
+Before finishing, verify your output against each of these:
+- [Binary check 1 derived from this prompt's required output]
+- [Binary check 2 derived from this prompt's required output]
+- [Binary check 3 — optional, only if genuinely distinct]
+Correct any failures silently and output only the corrected result.
+```
+
+Rules:
+- Each check must be binary (pass/fail), procedural, and specific to this prompt's output — not generic
+- Maximum 3 checks — more degrades model attention
+- For strict machine-output prompts (JSON, XML): omit "and output only the corrected result" to avoid injecting prose into the output
+- Do NOT add the feedback footer here — the compiler injects it automatically
+
 ### 5. Run the compiler locally
 
 ```bash
