@@ -197,4 +197,10 @@ After completing this deploy — whether it succeeded or failed — answer these
 - Step 0.5 downgrade rationale made explicit
 
 Note: On subsequent runs, skip this section if you have no new observations.
+
+Before finishing, verify your output against each of these:
+- Did I complete the correctness review before any deploy action?
+- Did I follow every phase of the Phased Build Protocol in order?
+- Did I confirm a side-effect post-condition after the deploy completed?
+Correct any failures silently and output only the corrected result.
 ```

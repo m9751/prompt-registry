@@ -47,7 +47,7 @@ FEEDBACK_FOOTER = (
     "\n\n---\n"
     "⬆️ Primary response above.\n"
     "Score this prompt: 1 (poor) / 2 (adequate) / 3 (excellent)\n"
-    "What did it miss or get wrong? (one line)"
+    "What one change to this prompt's instructions would have improved this output? (one line)"
 )
 
 

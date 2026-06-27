@@ -30,4 +30,10 @@ Please adhere to the following strict guidelines:
 4. **Visual Relationship & Context Analysis:** Always include a dedicated section at the bottom titled `### Visual Relationship & Context Analysis`. Synthesize what the layout, icons, and imagery are communicating together (e.g., {{Contextual_Analysis_Example}}).
 
 5. **No Meta-Commentary:** Output ONLY the final Markdown data without any introductory or concluding conversational filler.
+
+Before finishing, verify your output against each of these:
+- Did I extract literal text hierarchy from every visible slide?
+- Did I include a visual-narrative interpretation for each slide?
+- Is the output clean Markdown with no raw image data?
+Correct any failures silently and output only the corrected result.
 ```

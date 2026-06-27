@@ -83,4 +83,10 @@ For each phase, list: (a) the 2–3 highest-priority integrations to build, (b) 
 - No conversational filler, no preamble, no closing summary
 - All system names, protocols, and constraints must be explicitly named — no generic placeholders
 - Flag any section where the source data was insufficient to populate with: `[INSUFFICIENT DATA — requires follow-up]`
+
+Before finishing, verify your output against each of these:
+- Did I include all required brief sections (System Catalog, Pain Points, Canonical Data Model, Architectural Constraints, Phased Blueprint)?
+- Is every claim sourced to a specific discovery artifact?
+- Did I flag any gaps where discovery data was insufficient?
+Correct any failures silently and output only the corrected result.
 ```

@@ -14,6 +14,16 @@ Living record while the prompt is refined. **Not dispatch-ready** until ship gat
 | **Source** | `PRM-CDXP-002_repo-structure-audit.md` |
 | **Compiled** | `dist/prompts_latest.json` |
 
+### v1.8.0 — 2026-06-25 (Playbook A v2 alignment — prompt friction fix)
+
+**Prompt friction identified in live audit of prompt-registry (2026-06-25):**
+
+- **False positive P1-01:** Step 1a check flagged `## For Claude landing here` as non-conformant. Root cause: the audit prompt's wording check diverged from playbook Step 1a, which uses `"For Claude landing here"` as its own template heading. Any future version that checks heading wording must quote the playbook template verbatim, not infer "For agents landing here."
+- **Wrong fix recommendation:** The audit summary told the operator to rename the heading. The rename would have made a conformant repo deviate from the playbook. Fix recommendations derived from a false positive must not reach §8.
+- **Dispatcher gap:** Playbook was not injected via `--add-dir`; `playbook_version = unknown`. This is a dispatcher obligation, but §11 audit_confidence should cap at `medium` (not `high`) whenever playbook_version is unknown.
+
+**Rule addition for v1.8.x:** In the Track A Step 1a row, evidence for "partial" requires the heading to differ from the playbook template AND from "For Claude landing here." If the heading matches either, status = present.
+
 ### v1.7.2 — 2026-06-09 (M2 scope + navigation M9 schema)
 - M2: build/install/compile only — verify/lint excluded; CI artifact-validation vs local install not M2.
 - Tracer C: ci_artifact_validation label; github supplement partial does not increment M2.

@@ -3,21 +3,22 @@ id: PRM-INFRA-002
 title: Make Every Derived Index Self-Healing
 domain: systems-architecture
 source_format: Derived-index register (register.md) + repo file tree
-target_orchestrator: Claude Fable 5 (autonomous long-horizon, effort xhigh)
+target_orchestrator: Claude Sonnet 4.6 (session-scoped; operator runs interactively)
 downstream_consumer: Operator (reviews PR output + register completeness)
-version: 1.0.0
-last_updated: 2026-06-12
+version: 1.2.0
+last_updated: 2026-06-26
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-002_fable-derived-index-self-healing.md
 use_for: Audit every derived index in a multi-repo Claude Code operating system, wire un-triggered ones to self-heal on drift, and produce a durable register with automatic triggers and freshness invariants for each index
 ---
 
 ## Overview
 
-Autonomous, long-horizon Fable 5 run for hardening the memory and retrieval layer of a multi-repo Claude Code operating system. A "derived index" is any artifact mechanically rebuilt from a source — a JSON manifest, a Qdrant vector collection, a compiled prompt bundle. This prompt audits the full set, wires un-triggered ones to self-heal on drift, and produces a register with evidence for each trigger.
+Operator-supervised Sonnet 4.6 run for hardening the memory and retrieval layer of a multi-repo Claude Code operating system. A "derived index" is any artifact mechanically rebuilt from a source — a JSON manifest, a Qdrant vector collection, a compiled prompt bundle. This prompt audits the full set, wires un-triggered ones to self-heal on drift, and produces a register with evidence for each trigger.
 
-> Paste the block below to Claude Fable 5. Effort: **xhigh**. This is an autonomous, long-horizon run.
-> Structure follows the Fable 5 prompting guide (reason-first, brief steering, stated boundaries,
-> grounded progress, self-verification, autonomous-pause rule, memory notes, brevity addendum).
+> Paste the block below into a Claude Sonnet 4.6 session. This is an operator-supervised run — Michael
+> is present and can answer questions. The two engineering method guides referenced below
+> (`ci-cd-pipeline-builder` and `observability-designer`) live in
+> `~/repos/smokin-knowledge/agentic-governance/references/` — read them before building each trigger.
 
 ## Prompt
 
@@ -30,7 +31,7 @@ The full pattern and reasoning is written up in `~/repos/smokin-coffee/entries/s
 
 ## The task
 
-Work the derived-index register at `C:\Users\mbusa\repos\claude-config\references\derived-index-register.md` to completion, and extend it. For each derived index in the system, the end state is: **(a) an automatic trigger** (a hook, a scheduled job, or a CI workflow — never a human-run command), **and (b) a coverage/freshness invariant** that surfaces a warning the day it drifts (for example `count(index) == count(source)`, or chunk-age exceeds a threshold). The reference implementation already exists: the Stop hook `~/.claude/hooks/memory-manifest-stop-sync.sh` (rebuild-on-drift) and the `smokin_memory` session-close plus 03:00-fallback ingest. Port that shape to the rest.
+Work the derived-index register at `~/repos/claude-config/references/derived-index-register.md` to completion, and extend it. For each derived index in the system, the end state is: **(a) an automatic trigger** (a hook, a scheduled job, or a CI workflow — never a human-run command), **and (b) a coverage/freshness invariant** that surfaces a warning the day it drifts (for example `count(index) == count(source)`, or chunk-age exceeds a threshold). The reference implementation already exists: the Stop hook `~/.claude/hooks/memory-manifest-stop-sync.sh` (rebuild-on-drift) and the `smokin_memory` session-close plus 03:00-fallback ingest. Port that shape to the rest.
 
 **Two discovery scopes — do both:**
 1. **The register's 10 rows.** Wire the un-triggered ones (the KB vector ingest is the clean next one, explicitly "batch with the smokin_memory fix"). For rows already marked triggered, open the trigger file and check that it actually calls the rebuild — record the evidence, don't assume.
@@ -71,7 +72,16 @@ You are done when: every derived index in the system — the register's rows **a
 - Don't add features, refactor, or introduce abstractions beyond what each fix requires. The simplest trigger that reliably fires is the right one; a one-line cron beats a framework.
 - Your final summary is the operator's first look at an autonomous run: lead with the outcome in one plain sentence (how many indexes, how many were stale, what's now self-healing), then the supporting detail. Write complete sentences; give each file, commit, and index its own plain clause; drop the working shorthand.
 
-## Autonomous operation (system reminder)
+## Execution discipline
 
-You are operating autonomously. The user is not watching in real time and cannot answer questions mid-task, so asking "Want me to…?" or "Shall I…?" will block the work. For reversible actions that follow from the original request, proceed without asking. Offering follow-ups once the task wraps is fine; asking permission after already discussing the work with the user before doing it is not. Before ending your turn, check your last paragraph. If it is a plan, an analysis, a question, a list of next steps, or a promise about work you have not done ("I'll…", "let me know when…"), do that work now with tool calls. End your turn only when the task is finished, or when you are blocked on the one kind of input only the operator can provide (a destructive or irreversible decision, per the Boundaries section).
+Michael is present and can answer questions. When you have enough information to act, act — don't narrate options you will not pursue. End your turn only when the task is finished, or when you are blocked on input only the operator can provide (a destructive or irreversible decision, per the Boundaries section).
+
+## Self-critique (run before delivering your final summary)
+
+Draft your summary. Then verify it against each check below. Correct any failures silently and deliver only the corrected result.
+
+- Did I read the trigger file for every row I marked TRIGGERED — not just grep for the hook name?
+- Does every row have a coverage/freshness invariant recorded, OR an explicit reason it doesn't need one?
+- Did I run the second-lens pass for data-derived indexes (not just script-built ones)?
+- Is there at least one row I investigated and found clean — confirming I didn't stop at the first finding?
 ```

@@ -180,4 +180,10 @@ an HTML attribute value or inline-CSS string (e.g. `style="color:#fff"` →
 treat it as an invariant FAIL — not an innocent quirk. It is a strict signal that
 you drifted from targeted structural editing and touched load-bearing attribute
 data. Stop and correct it before completing.
+
+Before finishing, verify your output against each of these:
+- Did the refactored HTML preserve identical visual rendering to the original?
+- Did I apply consistent indentation and section fences throughout?
+- Did I add no new functionality or content?
+Correct any failures silently and output only the corrected result.
 ```

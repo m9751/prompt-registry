@@ -108,4 +108,10 @@ Produce, in order:
 4. A one-line reminder that engagement/video tracking lives on the Vercel proposal page (api/beacon.js), not in this email.
 
 Do not invent any URL, pixel, or fact not supplied in the brief. There is NO placeholder path for required fields: any missing or invalid required input is a hard stop — emit only the blocking validation error and zero HTML. (A `{{PLACEHOLDER}}` is permitted ONLY for a genuinely optional, absent field, never for a required one.)
+
+Before finishing, verify your output against each of these:
+- Did I produce both a dev copy and a minified ship copy?
+- Does the email include the poster image and play-button linking to the walkthrough modal?
+- Is the HTML Gmail-safe (no external CSS, no JavaScript)?
+Correct any failures silently and output only the corrected result.
 ```

@@ -5,8 +5,8 @@ domain: systems-architecture
 source_format: Git repository (filesystem)
 target_orchestrator: Codex exec (read-only)
 downstream_consumer: Principal engineer / repo builder / agent onboarding
-version: 1.7.2
-last_updated: 2026-06-09
+version: 1.8.0
+last_updated: 2026-06-24
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-CDXP-002_repo-structure-audit.md
 use_for: Measure whether a repo enables reliable, consistent agent execution — structural readiness scorecard with AERR metrics, not business-logic review
 ---
@@ -121,9 +121,9 @@ For each row: present | partial | missing | n-a — with evidence (path, section
 
 | Requirement | Playbook ref |
 |---|---|
-| README: identity + reading-order table + boundary + "For Claude" (repo-specific rules per Step 1a template — not generic filler) | Step 1a |
+| README: identity + task-driven reading-order row + boundary + "For agents landing here (read before any action)" section with rule #1 AGENTS.md gate (repo-specific rules per Step 1a template — not generic filler) | Step 1a |
 | Rules file frontmatter (`last_incident`, `recurrence_count`, `load_bearing`) on each `rules/*.md` | Step 8c |
-| AGENTS.md: identity, nav, key constraint, primary task, NEVER, git workflow | Step 1b |
+| AGENTS.md: identity + cold-start opener, nav, key constraint, primary task with load-bearing step 1 (agent cannot execute step 1 without reading AGENTS.md — anti-patterns: `git pull`, `git checkout -b`, `ls`, search/glob as step 1), NEVER, git workflow | Step 1b |
 | CLAUDE.md exists (repo-specific or explicit minimal stub) | Step 1c |
 | STATUS.md: current phase + open items | Step 1d |
 | spec/README.md: one row per spec file | Step 1e |
@@ -132,11 +132,11 @@ For each row: present | partial | missing | n-a — with evidence (path, section
 **Track A legacy n/a / partial rules:**
 - `spec/README.md` → **partial** (not missing) when an equivalent spec index exists elsewhere (e.g., `docs/specs/` with README or indexed list) — cite path and gap vs playbook layout.
 - `spec/lessons.md` → **partial** when incident/decision log exists under another path (e.g., `docs/specs/`, `spec/lessons.md` missing but lessons content elsewhere) — do not mark missing solely because path differs on legacy repos.
-- README Step 1a "For Claude" → **partial** when section exists but rules are generic agent etiquette (e.g., "be careful", "read docs") without repo-specific paths, install steps, or boundaries — playbook Step 1a requires worked-example shape.
+- README Step 1a "For agents landing here" → **partial** when section exists but rule #1 is missing (no explicit AGENTS.md gate), or rules are generic agent etiquette (e.g., "be careful", "read docs") without repo-specific paths, install steps, or boundaries — playbook Step 1a requires worked-example shape and task-driven reading-order row.
 - Step 8c rules frontmatter → **n-a** when no `rules/` directory at repo root or under documented mirror path (e.g., `claude-config/rules/` when repo is the rules mirror). When `rules/` exists, score **partial** if some files lack frontmatter; **missing** if majority lack it.
 | Authority hierarchy + pointer directive in AGENTS.md | Step 2 |
 | Significant specs: valid-as-of + falsification-pointer + review-trigger | Step 8a |
-| Cold-agent navigation test evidence (or [HYPOTHESIS] not yet run) | Step 5 |
+| Cold-agent navigation test evidence — Tests 1+2 (question-driven) AND Test 3a (task-driven sequencing: first Read is AGENTS.md, no Bash/Glob/Search precedes it) AND Test 3b (comprehension: repo-specific opaque question, verbatim-match ≥20 chars from AGENTS.md) — or [HYPOTHESIS] not yet run | Step 5 |
 | Git workflow documented in AGENTS.md | Step 9 |
 
 ### Track B checklist (code-repo + app/service only)
@@ -188,7 +188,7 @@ Apply when ranking §7 P0 / P1 / P2:
 **P1 (navigation reliability):**
 - Missing `spec/README.md` / equivalent index (partial only if indexed elsewhere — still P1 until playbook path exists)
 - Missing `STATUS.md`, fragmented front door (M7 = 1), missing Step-5 test evidence
-- README not Step-1a shape, "For Claude" generic filler (Step 1a partial), missing `spec/lessons.md` when no legacy partial path
+- README not Step-1a shape, "For agents landing here" section missing or rule #1 gate absent or generic filler (Step 1a partial), missing `spec/lessons.md` when no legacy partial path
 - Rules frontmatter gaps on active `rules/` corpus (Step 8c partial/missing) — P1 not P0 unless blocks governance audit
 
 **P2 (hygiene and cosmetic — never P0):**
@@ -436,7 +436,7 @@ Run and record [OBSERVED]:
 - `repo_remote` — `git remote get-url origin` (or `none` if unset)
 - `git_sha` — `git rev-parse HEAD`
 - `git_branch` — `git branch --show-current` (or detached SHA label)
-- `prompt_version` — `1.7.2` (PRM-CDXP-002)
+- `prompt_version` — `1.8.0` (PRM-CDXP-002)
 - `playbook_version` — from playbook header `Spec version:` line, or `unknown`
 
 ### Prior audit injection (optional)
@@ -449,7 +449,7 @@ After completing §1–§12, emit one fenced `json` block tagged `prm-cdxp-002-s
 
 Required fields (emit as valid JSON in output §13):
   schema (must be exactly "prm-cdxp-002-snapshot-v1"), audited_at, repo_path, repo_remote,
-  git_sha, git_branch, prompt_version ("1.7.2"), playbook_version, playbook_repo_type,
+  git_sha, git_branch, prompt_version ("1.8.0"), playbook_version, playbook_repo_type,
   navigation_primary, makefile_front_door (boolean), playbook_conformance_pct,
   applicable_gap_count, present_count, partial_count, missing_count,
   aerr_mode (default|navigation), aerr_score, aerr_raw (integer, omit when no floor applied),
@@ -511,6 +511,12 @@ Return markdown in this order:
 Primary output ends at §14. Do not embed prompt score or miss feedback inside §0–§14.
 
 Keep prose sections under 260 lines. §13 JSON is exempt from line cap. If P0 count exceeds 5, sections 6–8 may expand; abbreviate section 12 first, never §13.
+
+Before finishing, verify your output against each of these:
+- Did I produce an AERR scorecard with scores for each metric?
+- Did I limit the audit to structural readiness (not business logic)?
+- Did I flag every missing required structural element?
+Correct any failures silently and output only the corrected result.
 </structured_output_contract>
 
 <registry_feedback>

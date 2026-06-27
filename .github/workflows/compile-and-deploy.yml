@@ -32,7 +32,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -44,6 +44,19 @@ jobs:
 
       - name: Run compile script (validation + artifact build)
         run: python scripts/compile_prompts.py
+
+      - name: Coverage invariant — compiled count must equal source count
+        run: |
+          echo "=== Coverage invariant: compiled prompts == source .md files ==="
+          source_count=$(find prompts -name "*.md" ! -name "AGENTS.md" | wc -l | tr -d ' ')
+          compiled_count=$(jq '.prompts | length' dist/prompts_latest.json)
+          echo "Source .md files: $source_count"
+          echo "Compiled prompts: $compiled_count"
+          if [ "$compiled_count" -ne "$source_count" ]; then
+            echo "COVERAGE_FAIL: $((source_count - compiled_count)) source file(s) missing from index ($compiled_count/$source_count indexed)"
+            exit 1
+          fi
+          echo "COVERAGE_OK: $compiled_count/$source_count"
 
       - name: Verify feedback footer present on all prompts
         run: |
@@ -91,7 +104,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
