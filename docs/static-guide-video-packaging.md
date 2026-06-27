@@ -1,8 +1,8 @@
 # Static Guide Overview Video — Packaging Blueprint
 
-**Status:** Phase 3–4 in progress (toolkit verified; PR #47 open)
-**Last updated:** 2026-06-17
-**Pilot:** [mulesoft-claude-onboarding](https://github.com/m9751/mulesoft-claude-onboarding)
+**Status:** Phase 3–4 in progress (toolkit verified; PR #47 merged). **2nd pilot shipped 2026-06-19** — `musc-video` via the MP4-ready fast path (§1b).
+**Last updated:** 2026-06-19
+**Pilot:** [mulesoft-claude-onboarding](https://github.com/m9751/mulesoft-claude-onboarding) (full pipeline) · [musc-video](https://github.com/m9751/musc-video) (MP4-ready fast path)
 **Agent prompt:** `PRM-PDLV-006` (`prompts/product-delivery/PRM-PDLV-006_static-guide-overview-video.md`)
 **Pilot run log:** `demo-output/PROMPT_LOG.md`
 
@@ -24,6 +24,51 @@ This document tracks **how the pilot was built** and defines **what to extract**
 | Live | Vercel static host | https://mulesoft-claude-cursor-onboarding.vercel.app/ |
 
 **Timeline:** HTML guide May 24–25, 2026 · video pipeline June 2, 2026 (commit `283a3bc`).
+
+---
+
+## 1b. MP4-ready fast path (when the video already exists)
+
+**The generation engine (§2–§5) exists to PRODUCE an MP4 from a guide. If you already HAVE the
+MP4, skip it entirely and run only the back half (§6 embed + beacon).** This is the common case
+for a one-off customer video (a recorded Loom/Zoom/exported deck) and is much lower-risk: no
+Playwright, no `scenes.json`, no edge-tts, no ffmpeg.
+
+**Decision gate (run first):**
+
+| Do you have a finished MP4? | Path |
+|---|---|
+| No — building from a live HTML guide | Full pipeline (§2–§5) → then §6 |
+| **Yes — MP4 in hand** | **Fast path below** (skip §2–§5) |
+
+**Fast-path steps (proven by the `musc-video` pilot, 2026-06-19):**
+
+1. **New standalone repo + Vercel project** (NOT an archive repo — e.g. `customer-work` forbids
+   being a deploy source). Scaffold the 4 mandatory root files per
+   `new-repo-playbook.md` (a single-page deliverable repo needs no manifest/domains/Playbook B).
+2. **Clone the proven page shape**, do not hand-write the beacon. Best source:
+   [`harness-resource-hub/index.html`](https://github.com/m9751/harness-resource-hub) — a complete
+   single-file page with the beacon, video element, and play/progress/complete tracking already
+   correct. Swap: header copy, the `<video src>`, and a **unique `PROPOSAL_ID`**.
+3. **Drop the MP4** at `videos/<slug>.mp4`; `.gitignore` excludes `.vercel` + `.DS_Store`.
+4. **Deploy:** `gh repo create m9751/<slug> --private --source=. --push` → `vercel link` →
+   `vercel --prod` (Vercel CLI needs `--scope <team>` if link returns a `next[]` hint).
+5. **Verify (BLOCKS done):** static grep on the LIVE html (`text/plain` ≥1, `application/json`
+   =0 in the send, beacon URL literal present, no `/undefined`, no `__PROPOSAL_ID__`), then a
+   synthetic POST → confirm a row lands in `proposal_engagement` (a 200 on the pixel ≠ a row).
+6. **Log** to ST `deliverables` + `account_artifacts` (read `pg_constraint` first — `status='active'`,
+   `project='st'` on ST; values diverge per project).
+
+**Beacon event set, fast path:** `proposal_opened`, `walkthrough_play`,
+`walkthrough_progress` (25/50/75), `walkthrough_complete`, `cta_clicked` — the harness names.
+(The full-pipeline pilot used `video_started`/`video_completed`/`video_unmuted` per §6; the harness
+template's quartile-progress names are the richer, preferred set. Pick one and keep it consistent
+per page — the column is `event_type` either way.)
+
+**Gotcha that bit the musc-video build:** the target repo's governance may forbid hosting. Read the
+repo's `AGENTS.md`/`CLAUDE.md` BEFORE choosing it as the deploy home — an archive/source-of-record
+repo (`customer-work`) explicitly bans a `vercel.json` or Vercel project at its root. Deploy from a
+standalone repo; archive a source copy into the archive repo separately (additive).
 
 ---
 
@@ -240,7 +285,7 @@ No MCP required for the proven pilot path.
 ### Phase 4 — Skill / install path
 - [x] New skill `static-guide-video` at `~/.grok/skills/static-guide-video/SKILL.md`
 - [x] Register in smokin-os platform catalog (PR smokin-os `docs/static-guide-video-catalog`)
-- [ ] Second pilot on non-MuleSoft HTML guide
+- [x] Second pilot — `musc-video` (2026-06-19), via the **MP4-ready fast path** (§1b), not the full pipeline. Validated the embed+beacon back half independently of the generation engine; live at https://musc-video.vercel.app, tracking confirmed in `proposal_engagement`.
 
 ### Phase 5 — Distribution
 - [x] `prompt-registry/packages/static-guide-video/` (PR #47)
@@ -278,5 +323,5 @@ mulesoft-claude-onboarding/
 
 1. Repo home: new `static-guide-video` vs `prompt-registry/packages/`?
 2. Skill name: `static-guide-video` vs extend `demo-video`?
-3. Second pilot: which HTML guide next?
+3. ~~Second pilot: which HTML guide next?~~ → DONE: `musc-video` (MP4-ready fast path, §1b). Open follow-up: a second pilot on the FULL pipeline (non-MuleSoft HTML guide) is still unproven.
 4. NotebookLM Video Overview path: same package or separate PRM?
