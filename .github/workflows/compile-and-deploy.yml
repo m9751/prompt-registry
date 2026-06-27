@@ -1,8 +1,7 @@
 # compile-and-deploy.yml — PromptOps Registry CI/CD
 #
 # Security notes (github/AGENTS.md compliance):
-#   Rule 2: All actions/* are GitHub-owned and exempt from SHA-pinning requirement.
-#            No third-party actions are used in this workflow.
+#   Rule 2: All action refs pinned to SHA (mutable tags removed).
 #   Rule 3: No cleartext secrets. GITHUB_TOKEN is auto-provisioned by GitHub.
 #   Rule 4: No ${{ github.event.* }} context values are used in any run: step.
 #
@@ -32,10 +31,10 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
 
       - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55  # v5.5.0
         with:
           python-version: '3.11'
 
@@ -104,10 +103,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
 
       - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55  # v5.5.0
         with:
           python-version: '3.11'
 
@@ -118,11 +117,11 @@ jobs:
         run: python scripts/compile_prompts.py
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa  # v3
         with:
           path: dist/
           # dist/ is git-ignored; CI generates it fresh on every deploy run
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e  # v4
