@@ -1,5 +1,7 @@
 .PHONY: help bootstrap build verify lint
 
+PYTHON ?= python3
+
 help:
 	@echo "make bootstrap  — install Python deps"
 	@echo "make build      — compile prompts → dist/"
@@ -10,7 +12,7 @@ bootstrap:
 	pip install -r requirements.txt
 
 build:
-	python scripts/compile_prompts.py
+	$(PYTHON) scripts/compile_prompts.py
 
 verify: build
 	./scripts/ci-verify-footer.sh
