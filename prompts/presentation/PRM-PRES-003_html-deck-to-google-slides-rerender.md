@@ -5,7 +5,7 @@ domain: presentation
 source_format: A complete HTML file (scrollytelling page, web one-pager, or multi-section HTML deck)
 target_orchestrator: Claude (Claude Code / Advanced Chat)
 downstream_consumer: Human — pastes one .gs into script.google.com and Runs once to build a single multi-slide Google Slides deck in Google Drive
-version: 1.0.0
+version: 1.1.0
 last_updated: 2026-06-30
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/presentation/PRM-PRES-003_html-deck-to-google-slides-rerender.md
 use_for: Re-render an existing HTML page or deck into ONE branded multi-slide Google Slides deck via a single Apps Script file — no per-slide scripts, source HTML never modified
@@ -39,7 +39,10 @@ The .gs you emit must call SlidesApp.create() to build a NEW deck in Drive. It m
 open, read, or edit the source HTML file. Two separate artifacts; the original is never a
 write target. Write the .gs to a NEW, uniquely-named file so the original cannot be clobbered.
 Default output location: the user's Downloads folder — NEVER write the .gs into the source
-HTML's own folder, which may be a synced or deploy-bound repo.
+HTML's own folder, which may be a synced or deploy-bound repo. If a file with the target name
+already exists in Downloads, append a numeric suffix (-2, -3, …) before .gs rather than
+overwrite it — the date stamp alone does not guarantee uniqueness for two runs of the same
+account on the same day.
 
 STEP 1 — Collect inputs
 
@@ -62,28 +65,37 @@ Ask for the following if not already provided:
 
 STEP 2 — Read and segment the HTML
 
-1. Read the entire file before segmenting. Do not work from the first screenful.
+1. Read the ENTIRE file before deciding anything. Do not work from the first screenful.
 
-0. FIRST decide: is this ONE slide or a deck? If the HTML is a single self-contained
-   infographic / one-card layout — one title, its supporting content, and an optional tagline
-   banner, all designed to be seen at once on a single canvas — then produce EXACTLY ONE slide
-   that mirrors that layout (title + subtitle + cards/columns + banner, all on one canvas).
-   Do NOT split it into multiple slides, and do NOT add a separate title slide or closing
-   slide. The title/closing "ceremony" in rule 4 is for MULTI-SECTION decks ONLY. A deck =
-   multiple distinct <section>/data-slide blocks or several <h2> headings each meant as its
-   own screen. When unsure, default to fewer slides — match the source's natural slide count.
+2. DECIDE: is this ONE slide or a multi-section deck? Make this call before any segmenting.
+   Single-slide = a self-contained infographic / one-card layout: one title, its supporting
+   content, and an optional tagline banner, all designed to be seen at once on a single canvas.
+   For a single-slide source, produce EXACTLY ONE slide that mirrors that layout (title +
+   subtitle + cards/columns + banner, all on one canvas). Do NOT split it into multiple slides,
+   and do NOT add a separate title slide or closing slide — the title/closing "ceremony" in
+   rule 5 is for MULTI-SECTION decks ONLY.
+   Multi-section deck = multiple distinct <section> / data-slide blocks, OR several <h2>
+   headings that each introduce a NEW full screen of content (not subheads within one layout).
+   Disambiguation when <h2> headings are present: they signal a deck ONLY if each <h2> begins
+   a visually distinct screen-sized block; multiple <h2> SUBHEADS inside a single infographic
+   card (shared background, sitting side-by-side or stacked within one viewport) are NOT slide
+   boundaries — that is still ONE slide. When unsure, default to fewer slides; match the
+   source's natural slide count.
 
-2. (Multi-section decks) Identify slide boundaries. Prefer explicit markers in this order:
+3. (Multi-section decks only) Identify slide boundaries. Prefer explicit markers in this order:
    a. data-slide / data-section attributes
    b. <section> elements
-   c. <h2> headings (each major heading starts a new slide)
+   c. <h2> headings that each begin a screen-sized block (per rule 2's disambiguation)
    d. horizontal rules / page-break CSS as a last resort
-3. One source section → one slide, UNLESS a section is too dense to fit a 1280x720 canvas;
+4. One source section → one slide, UNLESS a section is too dense to fit a 1280x720 canvas;
    then split it into 2 slides and SAY SO in your tracking note. Never silently drop content.
-4. For a MULTI-SECTION deck only, emit a title slide (from <title> / hero / h1) and a closing
-   slide (from the final CTA / footer / next-step block) even if the HTML has neither
-   explicitly. A single-slide source (rule 0) gets NO added title or closing slide.
-5. For each slide, extract: eyebrow/label, title, supporting line, and the body content
+5. For a MULTI-SECTION deck only, emit a title slide and a closing slide. EXTRACT their text
+   from the source — title slide from <title> / hero / h1; closing slide from the final CTA /
+   footer / next-step block. If the source genuinely has no such text, use the deck title and a
+   neutral structural label (e.g. "Next Steps") for the heading and leave the body EMPTY rather
+   than inventing copy — per STEP 3 rule 10, never fabricate facts, figures, or claims. A
+   single-slide source (rule 2) gets NO added title or closing slide.
+6. For each slide, extract: eyebrow/label, title, supporting line, and the body content
    (bullets, quote cards, table rows, phase/step cards — whatever the section contains).
 
 SVG / canvas diagrams: do NOT attempt to import raw SVG. Apps Script cannot render arbitrary
@@ -120,7 +132,8 @@ Rules — must follow exactly or the script will error in Google Apps Script:
 
 1. One entry function buildDeck() that:
    - calls var pres = SlidesApp.create('{deck title}')
-   - reuses the default first slide: pres.getSlides()[0] for the title slide
+   - reuses the default first slide pres.getSlides()[0] as slide 1 — the title slide for a
+     multi-section deck, OR the single content slide for a single-slide source (STEP 2 rule 2)
    - appends every later slide with pres.appendSlide(SlidesApp.PredefinedLayout.BLANK)
    - ends with Logger.log('Created: ' + pres.getUrl())
 2. 6-digit hex only — scan every setSolidFill() before output. If any hex matches
@@ -173,14 +186,16 @@ Include run instructions at the top of the .gs as comments:
 
 Then output a short TRACKING NOTE (outside the .gs) listing:
   - source file (confirmed read-only, never modified)
-  - output file path
+  - output file path — the FULL absolute path actually written, including the Downloads folder
+    and any numeric uniqueness suffix (not the bare filename)
   - slide count and a one-line title per slide
   - any section that was split, and any diagram re-expressed as shapes
   - any source fact you could not verify (flag, do not fabricate)
 
-Then INSERT to Supabase (project cnplogkxbjecdeeritdl, table public.account_artifacts):
+Then INSERT to Supabase (project cnplogkxbjecdeeritdl, table public.account_artifacts).
+Record file_path as the SAME full absolute path reported in the tracking note:
   INSERT INTO public.account_artifacts (account_name, artifact_type, title, file_path, created_at)
-  VALUES ('{AccountName}', 'slide-deck', '{AccountName} Slide Deck', '{AccountName}-Slides-Code-YYYY-MM-DD.gs', NOW());
+  VALUES ('{AccountName}', 'slide-deck', '{AccountName} Slide Deck', '{full absolute .gs path}', NOW());
 
 Before finishing, verify your output against each of these:
 - Did I read the ENTIRE source HTML, match the source's natural slide count (single-slide infographic → exactly 1 slide, no added title/closing; multi-section deck → one slide per section + title/closing), drop no content, and leave the source file unmodified?
