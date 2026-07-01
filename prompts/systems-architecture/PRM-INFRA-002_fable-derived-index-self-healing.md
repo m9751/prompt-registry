@@ -5,8 +5,8 @@ domain: systems-architecture
 source_format: Derived-index register (register.md) + repo file tree
 target_orchestrator: Claude Sonnet 4.6 (session-scoped; operator runs interactively)
 downstream_consumer: Operator (reviews PR output + register completeness)
-version: 1.2.0
-last_updated: 2026-06-26
+version: 1.2.1
+last_updated: 2026-07-01
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-002_fable-derived-index-self-healing.md
 use_for: Audit every derived index in a multi-repo Claude Code operating system, wire un-triggered ones to self-heal on drift, and produce a durable register with automatic triggers and freshness invariants for each index
 ---
@@ -83,5 +83,4 @@ Draft your summary. Then verify it against each check below. Correct any failure
 - Did I read the trigger file for every row I marked TRIGGERED — not just grep for the hook name?
 - Does every row have a coverage/freshness invariant recorded, OR an explicit reason it doesn't need one?
 - Did I run the second-lens pass for data-derived indexes (not just script-built ones)?
-- Is there at least one row I investigated and found clean — confirming I didn't stop at the first finding?
 ```
