@@ -33,8 +33,12 @@ Place it in the correct domain folder under `prompts/`:
 prompts/
 ├── product-delivery/       # Human-facing outputs, briefings, summaries
 ├── ai-engineering/         # Machine-readable outputs, structured extraction
-└── systems-architecture/   # Technical parsing, transformation pipelines
+├── systems-architecture/   # Technical parsing, transformation pipelines
+├── sales-architecture/     # Discovery extraction, solution architecture, sales assets
+└── presentation/           # Slide decks (HTML, Google Slides, deck re-render)
 ```
+
+The authoritative domain enum is defined in `AGENTS.md` (§ frontmatter `domain` field) — keep this list in sync with it.
 
 File naming convention: `PRM-<MODEL>-<NNN>_<slug>.md`
 
