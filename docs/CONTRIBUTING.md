@@ -61,7 +61,7 @@ use_for: Convert a quarterly slide deck into an executive summary
 
 ### 4. Add the prompt text in a fenced code block
 
-Immediately after the frontmatter, add one (and only one) fenced code block containing the prompt:
+Add one (and only one) fenced code block containing the prompt. By convention it follows the frontmatter and any human-facing `## Overview` / branding-token section (see PRM-PRES-001/003, PRM-NBLM-006-STANDALONE) — the fence need not be the first element after the frontmatter, but it must be the sole fenced block:
 
 ````markdown
 ```
