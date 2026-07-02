@@ -19,7 +19,7 @@ contradict current reality, duplicates, and corrections that recur so often they
 should be rules. Blind trimming risks deleting a load-bearing pointer; blind
 rule-creation risks freezing a stale fact. This prompt surfaces drift and repeat
 corrections and lets the operator decide. It is prompt 3 of 4 in the
-Feedback-Harvest Playbook (`docs/feedback-harvest-playbook.md`).
+Feedback-Harvest Playbook (`~/repos/smokin-os/spec/feedback-harvest-playbook.md`).
 
 > Paste the block below into a Claude Sonnet 4.6 session. Operator-supervised.
 > Phase 1 is read-only; deletions and rule-promotions require approval.
@@ -29,7 +29,7 @@ Feedback-Harvest Playbook (`docs/feedback-harvest-playbook.md`).
 ```
 ## Why this matters (intent)
 
-I'm harvesting what our operating system has learned into enforced improvements, without applying findings randomly and breaking things. This is prompt 3 of 4 in the Feedback-Harvest Playbook (`~/repos/prompt-registry/docs/feedback-harvest-playbook.md` — read it first for the prime directive and shared guardrails). Memory is the largest, lowest-density store; its failure mode is drift. Blind trimming can delete a load-bearing pointer; blind rule-creation can freeze a stale fact. Harvest = surface drift and repeat-corrections, then let the operator decide.
+I'm harvesting what our operating system has learned into enforced improvements, without applying findings randomly and breaking things. This is prompt 3 of 4 in the Feedback-Harvest Playbook (`~/repos/smokin-os/spec/feedback-harvest-playbook.md` — read it first for the prime directive and shared guardrails). Memory is the largest, lowest-density store; its failure mode is drift. Blind trimming can delete a load-bearing pointer; blind rule-creation can freeze a stale fact. Harvest = surface drift and repeat-corrections, then let the operator decide.
 
 ## The task — Phase 1: current-state diagnosis (READ-ONLY)
 

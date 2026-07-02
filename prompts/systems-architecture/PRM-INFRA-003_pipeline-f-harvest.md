@@ -17,7 +17,7 @@ Operator-supervised Sonnet 4.6 run. Pipeline-F sweeps session transcripts agains
 the rule corpus and flags recurring patterns and missing-rule candidates. This
 prompt converts genuine signal into enforced rules without introducing false
 gates. It is prompt 1 of 4 in the Feedback-Harvest Playbook
-(`docs/feedback-harvest-playbook.md`) — run it first.
+(`~/repos/smokin-os/spec/feedback-harvest-playbook.md`) — run it first.
 
 > Paste the block below into a Claude Sonnet 4.6 session. Operator-supervised —
 > Michael is present. Phase 1 is read-only and ends in a STOP; nothing is edited
@@ -28,7 +28,7 @@ gates. It is prompt 1 of 4 in the Feedback-Harvest Playbook
 ```
 ## Why this matters (intent)
 
-I'm harvesting what our operating system has learned into enforced improvements, without applying findings randomly and breaking things. This is prompt 1 of 4 in the Feedback-Harvest Playbook (`~/repos/prompt-registry/docs/feedback-harvest-playbook.md` — read it first for the prime directive and shared guardrails). Pipeline-F flags recurring session patterns and missing-rule candidates, but a flagged pattern is a hypothesis, not a mandate. We once shipped a corpus-path bug that flagged every pattern as missing (rules=0 / missing=159) and it ran green for weeks. So diagnosis comes before any edit.
+I'm harvesting what our operating system has learned into enforced improvements, without applying findings randomly and breaking things. This is prompt 1 of 4 in the Feedback-Harvest Playbook (`~/repos/smokin-os/spec/feedback-harvest-playbook.md` — read it first for the prime directive and shared guardrails). Pipeline-F flags recurring session patterns and missing-rule candidates, but a flagged pattern is a hypothesis, not a mandate. We once shipped a corpus-path bug that flagged every pattern as missing (rules=0 / missing=159) and it ran green for weeks. So diagnosis comes before any edit.
 
 ## The task — Phase 1: current-state diagnosis (READ-ONLY)
 

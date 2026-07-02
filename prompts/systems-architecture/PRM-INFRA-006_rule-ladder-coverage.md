@@ -18,7 +18,7 @@ and the cross-machine inbox are propagation channels, not sources of new lessons
 Their failure mode is silent: a rule authored but never enforced, a hook never
 registered, a fix that landed on one machine but not the other. This prompt
 confirms the first three harvests actually took effect end to end. It is prompt 4
-of 4 in the Feedback-Harvest Playbook (`docs/feedback-harvest-playbook.md`) — run
+of 4 in the Feedback-Harvest Playbook (`~/repos/smokin-os/spec/feedback-harvest-playbook.md`) — run
 LAST, after PRM-INFRA-003/004/005 have filled the gaps it checks.
 
 > Paste the block below into a Claude Sonnet 4.6 session. Operator-supervised.
@@ -29,7 +29,7 @@ LAST, after PRM-INFRA-003/004/005 have filled the gaps it checks.
 ```
 ## Why this matters (intent)
 
-I'm harvesting what our operating system has learned into enforced improvements, without applying findings randomly and breaking things. This is prompt 4 of 4 in the Feedback-Harvest Playbook (`~/repos/prompt-registry/docs/feedback-harvest-playbook.md` — read it first for the prime directive and shared guardrails). The rule ladder and the cross-machine inbox are propagation channels, not lesson sources. Their failure mode is silent: a rule authored but never enforced, a hook never registered in settings.json, a fix that landed on one machine but not the other. This is a coverage check that the first three harvests took effect end to end — NOT a discovery pass.
+I'm harvesting what our operating system has learned into enforced improvements, without applying findings randomly and breaking things. This is prompt 4 of 4 in the Feedback-Harvest Playbook (`~/repos/smokin-os/spec/feedback-harvest-playbook.md` — read it first for the prime directive and shared guardrails). The rule ladder and the cross-machine inbox are propagation channels, not lesson sources. Their failure mode is silent: a rule authored but never enforced, a hook never registered in settings.json, a fix that landed on one machine but not the other. This is a coverage check that the first three harvests took effect end to end — NOT a discovery pass.
 
 ## The task — Phase 1: current-state diagnosis (READ-ONLY)
 

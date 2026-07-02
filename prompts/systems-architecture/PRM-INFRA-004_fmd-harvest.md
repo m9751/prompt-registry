@@ -18,7 +18,7 @@ in the smokin-coffee repo (9-step structure, FMD-001 through the latest). Many
 describe fixes that already shipped; some describe patterns never hardened. This
 prompt finds the lessons that are real AND not yet reflected in the live system.
 It is prompt 2 of 4 in the Feedback-Harvest Playbook
-(`docs/feedback-harvest-playbook.md`) — run after Pipeline-F (PRM-INFRA-003).
+(`~/repos/smokin-os/spec/feedback-harvest-playbook.md`) — run after Pipeline-F (PRM-INFRA-003).
 
 > Paste the block below into a Claude Sonnet 4.6 session. Operator-supervised.
 > Phase 1 is read-only and ends in a STOP.
@@ -28,7 +28,7 @@ It is prompt 2 of 4 in the Feedback-Harvest Playbook
 ```
 ## Why this matters (intent)
 
-I'm harvesting what our operating system has learned into enforced improvements, without applying findings randomly and breaking things. This is prompt 2 of 4 in the Feedback-Harvest Playbook (`~/repos/prompt-registry/docs/feedback-harvest-playbook.md` — read it first for the prime directive and shared guardrails). FMD entries are human-written failure lessons. The risk is re-applying a lesson whose fix already landed, or acting on an entry a later FMD superseded. Harvest = find lessons that are real AND not yet reflected in the live system.
+I'm harvesting what our operating system has learned into enforced improvements, without applying findings randomly and breaking things. This is prompt 2 of 4 in the Feedback-Harvest Playbook (`~/repos/smokin-os/spec/feedback-harvest-playbook.md` — read it first for the prime directive and shared guardrails). FMD entries are human-written failure lessons. The risk is re-applying a lesson whose fix already landed, or acting on an entry a later FMD superseded. Harvest = find lessons that are real AND not yet reflected in the live system.
 
 ## The task — Phase 1: current-state diagnosis (READ-ONLY)
 
