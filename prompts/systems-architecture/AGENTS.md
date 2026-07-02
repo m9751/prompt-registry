@@ -22,3 +22,7 @@ not_when: The output is a sales or executive presentation — use sales-architec
 - `PRM-CDXP-002` — Repository Structure Audit — Skeleton, Not Content
 - `PRM-INFRA-001` — Operational Hardening Deploy
 - `PRM-INFRA-002` — Make Every Derived Index Self-Healing
+- `PRM-INFRA-003` — Pipeline-F Finding Harvest
+- `PRM-INFRA-004` — FMD Learning-Log Harvest
+- `PRM-INFRA-005` — Memory Drift Audit and Harvest
+- `PRM-INFRA-006` — Rule-Ladder and Cross-Machine Coverage Check
