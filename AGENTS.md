@@ -39,6 +39,23 @@ A version-controlled prompt registry with automated validation, dual delivery (h
 
 ---
 
+## Executing a prompt (run surface)
+
+**When you EXECUTE a registry prompt, run the compiled `prompt_text` from `dist/prompts_latest.json` — never the fenced body of the `.md` source.** The `.md` is the *edit* surface; the compiled JSON is the *run* surface. The compiler injects the feedback footer (and any other terminal block) at build time, so the `.md` body is missing instructions the prompt depends on. Running the `.md` silently skips the feedback loop and any injected footer logic.
+
+Resolve a prompt to its run surface like this:
+
+```bash
+python3 -c "import json; d=json.load(open('dist/prompts_latest.json'));
+print(next(p['prompt_text'] for dd in [d] for p in (dd.values() if isinstance(dd,dict) else []) ))" # or grep the id
+```
+
+Before claiming a prompt was executed, confirm the text you ran ends with the feedback footer. If it does not, you ran the `.md` — stop and re-run from the compiled artifact.
+
+**RCA reference:** `docs/rca-md-vs-compiled-execution-2026-07-07.md`.
+
+---
+
 ## Feedback footer
 
 The compiler automatically appends a feedback block to every `prompt_text` in the JSON:
@@ -47,7 +64,7 @@ The compiler automatically appends a feedback block to every `prompt_text` in th
 ---
 ⬆️ Primary response above.
 Score this prompt: 1 (poor) / 2 (adequate) / 3 (excellent)
-What did it miss or get wrong? (one line)
+What one change to this prompt's instructions would have improved this output? (one line)
 ```
 
 **Do not add this to the `.md` source.** It is injected at compile time.
@@ -96,6 +113,7 @@ A PR that only modifies `.md` without regenerating the JSON is incomplete. CI wi
 
 ## NEVER
 
+- **Never execute the `.md` fenced body as a prompt.** Execute the compiled `prompt_text` from `dist/prompts_latest.json` — the `.md` is missing the compiler-injected footer/terminal block. See "Executing a prompt (run surface)".
 - **Never ship a prompt PR without running `make verify`.** `.md` alone is incomplete — CI and agents consume `dist/prompts_latest.json`.
 - **Never add the feedback footer to `.md` source.** `scripts/compile_prompts.py` injects it at compile time.
 - **Never create `main` as an orphan branch.** See `spec/lessons.md` and `docs/rca-divergence-2026-06-02.md`.
