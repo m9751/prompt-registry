@@ -5,8 +5,8 @@ domain: sales-architecture
 source_format: Structured Technical Brief (PRM-NBLM-005 output)
 target_orchestrator: Claude (Advanced Chat / Claude Code)
 downstream_consumer: Human presenter / Marp / HTML5+Tailwind / python-pptx
-version: 1.1.0
-last_updated: 2026-06-04
+version: 1.1.1
+last_updated: 2026-07-07
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/sales-architecture/PRM-NBLM-006_6-slide-cio-presentation-generator.md
 use_for: Transform a PRM-NBLM-005 Structured Technical Brief into a 6-slide CIO-ready architecture presentation
 ---
@@ -78,7 +78,7 @@ The Structured Technical Brief above is your exclusive factual grounding source.
 ## SLIDE 1: CURRENT STATE ARCHITECTURE FRICTION
 - Layout: 60/40 split — left column: diagnostic narrative, right column: high-contrast metric data cards
 - Background: Blue 20 (#032D60), white text
-- Core Content: Diagnose the core integration constraints from Section A & B. Right column must include Orange 70 (#FE9339) metric cards for abandonment rate and wallet share leakage (use exact figures from the Brief; if absent, flag [INSUFFICIENT DATA]).
+- Core Content: Diagnose the core integration constraints from Section A & B. Right column carries Orange 70 (#FE9339) metric cards. Card rule (conditional): if the Brief states a quantified abandonment rate and/or wallet-share leakage figure, render that figure as the card. If a figure is absent, do NOT render an empty `[INSUFFICIENT DATA]` card as the flagship metric — instead render a qualitative-pain card sourced from Section B (the highest-severity named business pain) and place a single `[INSUFFICIENT DATA — requires follow-up]` note beneath the right column indicating quantified metrics await a follow-up.
 - Tone: Clinical. No opinions.
 
 ## SLIDE 2: TARGET STATE REFERENCE ARCHITECTURE
@@ -148,7 +148,7 @@ In both cases: preserve all technical detail — never truncate content to maint
 
 Before finishing, verify your output against each of these:
 - Did I produce exactly 6 slides?
-- Is each slide written for a CIO audience (business outcomes, not technical detail)?
+- On Slide 1, did I avoid rendering an empty `[INSUFFICIENT DATA]` metric card as the flagship, substituting a qualitative-pain card when no figure exists?
 - Does every slide content trace back to the input brief?
 Correct any failures silently and output only the corrected result.
 ```
