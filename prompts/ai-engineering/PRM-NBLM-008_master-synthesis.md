@@ -5,8 +5,8 @@ domain: ai-engineering
 source_format: NotebookLM notebook (loaded sources)
 target_orchestrator: NotebookLM
 downstream_consumer: AI (Claude/Grok)
-version: 1.0.0
-last_updated: 2026-06-16
+version: 1.1.0
+last_updated: 2026-07-08
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/ai-engineering/PRM-NBLM-008_master-synthesis.md
 use_for: Synthesize all loaded notebook sources into a definitive AI-optimized reference document
 ---
@@ -32,6 +32,7 @@ Your goal is to extract, organize, and synthesize every piece of relevant data w
    - (Tier 2) Hands-on practitioner content, real-world case studies, and public forum posts (e.g., Reddit, Stack Overflow, named engineering blogs) containing specific data, hard numbers, or named findings.
    - (Tier 3) The most recent sources where chronological relevance matters.
 2. Conflict Resolution Rule: When official documentation and public forum/Reddit posts disagree on features, limitations, or behavior, document BOTH perspectives side-by-side (e.g., "Official Spec vs. Real-World Behavior"). Do not omit practitioner complaints in favor of pristine documentation, and vice versa.
+3. Source Relevance Rule: A single source file may concatenate transcripts or content about unrelated third parties (e.g., other companies bundled into the same PDF). Extract and synthesize ONLY the passages that concern {{Subject}}. Silently discard content about unrelated entities; do NOT let it bleed into sections, metrics, or quotes. If a source contains no {{Subject}} content at all, exclude it entirely rather than forcing a section from it.
 
 ## Phase 2: Core Document Generation
 ### Step 1 — Content-Driven Architecture
