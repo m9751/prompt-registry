@@ -55,6 +55,8 @@ Number each system. Per system, one field per line:
 - Directionality — Inbound | Outbound | Bi-directional
 - Consumer(s) — the caller that initiates the call (distinct from Directionality, the data flow). Comma-list multiple callers on one line; no duplicate entries per system. Mark INSUFFICIENT DATA if none named.
 
+Where a source is a slide deck or diagram, synthesize its on-slide bullet text and labels directly into these catalog fields — treat a boxed system name, an arrow-labelled protocol, or a printed velocity as first-class field values, not as a separate slide summary.
+
 If any source is an integration/HLD document with metadata schemas (field mappings, object definitions, data dictionaries, entity attributes), add **Section A.1: Integration Metadata Schemas** after the catalog: per integration, bullet the named objects/fields, data types, and mapping rules as stated. Use one convention — object.field snake_case (e.g. account.member_id) — normalizing spacing/casing but preserving the source term; if the source naming is canonical (data dictionary or DDL), keep it verbatim and note that. Omit this subsection if no such detail exists.
 
 #### SECTION B: Business Pain Points & Technical Implications
