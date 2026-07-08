@@ -5,8 +5,8 @@ domain: sales-architecture
 source_format: Meeting Transcript / Notes / Architecture Document
 target_orchestrator: Claude / Gemini
 downstream_consumer: Architecture diagram generator / Commercial proposal generator
-version: 1.0.1
-last_updated: 2026-07-07
+version: 1.0.2
+last_updated: 2026-07-08
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/sales-architecture/PRM-NBLM-005_discovery-to-architecture-extractor.md
 use_for: Transform discovery transcripts and notes into a structured brief for architecture diagram and proposal generation
 ---
@@ -54,6 +54,8 @@ Functional Domain options: Clinical, Financial, Engagement, Operational, Analyti
 Interface Type examples: HL7 v2, FHIR R4, REST API, SOAP, SFTP Flat File, JDBC, CDC
 Data Velocity options: Real-time, Near-real-time, Hourly, Daily Batch, Ad-hoc
 Directionality options: Inbound, Outbound, Bi-directional
+
+If the source includes integration architecture or high-level design documents that specify technical metadata schemas (field mappings, payload/object definitions, data dictionaries, entity attributes), add a **Section A.1: Integration Metadata Schemas** immediately after the table: for each documented integration, give a short bulleted summary or sub-table of the named objects/fields, data types, and transformation or mapping rules exactly as stated. Omit this subsection entirely if no such schema-level detail is present in the sources.
 
 #### SECTION B: Business Pain Points & Technical Implications
 For each business complaint, produce one bullet in this exact format:
