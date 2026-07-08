@@ -5,7 +5,7 @@ domain: ai-engineering
 source_format: NotebookLM notebook (loaded sources)
 target_orchestrator: NotebookLM
 downstream_consumer: AI (Claude/Grok)
-version: 1.1.0
+version: 1.1.1
 last_updated: 2026-07-08
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/ai-engineering/PRM-NBLM-008_master-synthesis.md
 use_for: Synthesize all loaded notebook sources into a definitive AI-optimized reference document
@@ -33,6 +33,7 @@ Your goal is to extract, organize, and synthesize every piece of relevant data w
    - (Tier 3) The most recent sources where chronological relevance matters.
 2. Conflict Resolution Rule: When official documentation and public forum/Reddit posts disagree on features, limitations, or behavior, document BOTH perspectives side-by-side (e.g., "Official Spec vs. Real-World Behavior"). Do not omit practitioner complaints in favor of pristine documentation, and vice versa.
 3. Source Relevance Rule: A single source file may concatenate transcripts or content about unrelated third parties (e.g., other companies bundled into the same PDF). Extract and synthesize ONLY the passages that concern {{Subject}}. Silently discard content about unrelated entities; do NOT let it bleed into sections, metrics, or quotes. If a source contains no {{Subject}} content at all, exclude it entirely rather than forcing a section from it.
+4. Visual Source Rule: Some sources are slide decks, diagrams, screenshots, or architecture images rather than prose. Treat their visual content as first-class source material: read on-slide labels, org charts, architecture boxes and arrows, and any metrics printed on a slide, and route that content into the relevant discovered theme section. Do NOT skip a source because it is image-based, and do NOT quarantine slide content in a separate "slides" section. Where a diagram states a relationship, integration, or number that the prose does not, extract it and attribute it to the slide.
 
 ## Phase 2: Core Document Generation
 ### Step 1 — Content-Driven Architecture
