@@ -5,8 +5,8 @@ domain: ai-engineering
 source_format: NotebookLM notebook (loaded sources)
 target_orchestrator: NotebookLM
 downstream_consumer: AI (Claude/Grok)
-version: 1.1.1
-last_updated: 2026-07-08
+version: 1.1.2
+last_updated: 2026-07-09
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/ai-engineering/PRM-NBLM-008_master-synthesis.md
 use_for: Synthesize all loaded notebook sources into a definitive AI-optimized reference document
 ---
@@ -42,7 +42,7 @@ Auto-discover the 8–12 major sub-topics or themes regarding {{Subject}} from t
 For each discovered topic, write an exhaustive deep-dive section using this structure: ### [Discovered Topic Heading], then Core Specifications; Granular Metrics (exact numbers, dates, prices, explicit limits, preserved precisely); Proper Nouns; Comparison Tables (markdown, wherever sources present competing options or variations); Real-World Practitioner Intel (tips, "in-the-trenches" learnings, best practices from forums); Risk Mitigation (Things to Avoid, common pitfalls, anti-patterns, troubleshooting); Verbatim Quotes (where they add critical precision); Tradeoffs & Constraints.
 SUBSECTION OMISSION RULE: if a subsection has no grounded content in the sources, OMIT that subsection heading entirely — do NOT print a placeholder, and do NOT pad it with restated facts or soft non-risks to fill the slot. If Tier-2 practitioner/forum sources are absent entirely, state that ONCE at the top of the document, then omit the empty subsections.
 ### Step 3 — Advanced Synthesis & Analytical Overlays
-Append exactly three closing sections: 1. Gaps, Contradictions & Disconnects (esp. where real-world findings contradict official documentation); 2. Surprising Insights (non-obvious, counter-intuitive findings, clever workarounds, hidden patterns); 3. Missing Information & Blind Spots (what the sources fail to answer — the exact boundaries of the current data pool).
+Append exactly three closing sections and NO others: 1. Gaps, Contradictions & Disconnects (esp. where real-world findings contradict official documentation); 2. Surprising Insights (non-obvious, counter-intuitive findings, clever workarounds, hidden patterns); 3. Missing Information & Blind Spots (what the sources fail to answer — the exact boundaries of the current data pool). Do NOT append a fourth section of any kind — no reviewer's read, editorial verdict, advisory opinion, recommendation, or commentary, even if flagged as "not grounded." The document ends after "Missing Information & Blind Spots."
 
 ## Execution Rules
 - No Condensing or Summarizing: match source depth; vague descriptions or rounded numbers are useless.
@@ -50,8 +50,9 @@ Append exactly three closing sections: 1. Gaps, Contradictions & Disconnects (es
 - Format: output a single continuous Markdown document, zero preamble, zero conversational intro, zero outro. Start immediately with the first section header.
 
 Before finishing, verify your output against each of these:
-- Did I synthesize content from all loaded sources, not just a subset?
+- Did I synthesize content from EVERY loaded source? Enumerate the sources by title and confirm at least one grounded claim attributed to each. A "grounded claim" means a concrete fact, metric, or finding extracted from the source text — restating the source title or inventing a vague observation does not satisfy the requirement. If a source is image-based (slides, diagrams, screenshots), Rule 4 still requires its visual content be extracted and routed into a theme section — a slide deck is not a valid source to skip. The ONLY sources that may be absent from the output are those excluded under Rule 3 (zero {{Subject}} content); if you excluded any source on that basis, name it once at the top. Silently dropping a source that does contain {{Subject}} content invalidates the output — ensure every relevant source is integrated before finalizing.
 - Does the output contain concrete findings with source attribution?
 - Did I exclude marketing language and unsupported claims?
+- Did I append exactly three closing sections and no fourth?
 Correct any failures silently and output only the corrected result.
 ```
