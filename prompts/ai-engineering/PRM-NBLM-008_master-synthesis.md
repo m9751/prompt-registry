@@ -5,8 +5,8 @@ domain: ai-engineering
 source_format: NotebookLM notebook (loaded sources)
 target_orchestrator: NotebookLM
 downstream_consumer: AI (Claude/Grok)
-version: 1.1.2
-last_updated: 2026-07-09
+version: 1.2.0
+last_updated: 2026-07-10
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/ai-engineering/PRM-NBLM-008_master-synthesis.md
 use_for: Synthesize all loaded notebook sources into a definitive AI-optimized reference document
 ---
@@ -32,8 +32,7 @@ Your goal is to extract, organize, and synthesize every piece of relevant data w
    - (Tier 2) Hands-on practitioner content, real-world case studies, and public forum posts (e.g., Reddit, Stack Overflow, named engineering blogs) containing specific data, hard numbers, or named findings.
    - (Tier 3) The most recent sources where chronological relevance matters.
 2. Conflict Resolution Rule: When official documentation and public forum/Reddit posts disagree on features, limitations, or behavior, document BOTH perspectives side-by-side (e.g., "Official Spec vs. Real-World Behavior"). Do not omit practitioner complaints in favor of pristine documentation, and vice versa.
-3. Source Relevance Rule: A single source file may concatenate transcripts or content about unrelated third parties (e.g., other companies bundled into the same PDF). Extract and synthesize ONLY the passages that concern {{Subject}}. Silently discard content about unrelated entities; do NOT let it bleed into sections, metrics, or quotes. If a source contains no {{Subject}} content at all, exclude it entirely rather than forcing a section from it.
-4. Visual Source Rule: Some sources are slide decks, diagrams, screenshots, or architecture images rather than prose. Treat their visual content as first-class source material: read on-slide labels, org charts, architecture boxes and arrows, and any metrics printed on a slide, and route that content into the relevant discovered theme section. Do NOT skip a source because it is image-based, and do NOT quarantine slide content in a separate "slides" section. Where a diagram states a relationship, integration, or number that the prose does not, extract it and attribute it to the slide.
+3. Source Relevance Rule: A source may bundle content about unrelated third parties. Extract ONLY passages concerning {{Subject}}; silently discard unrelated entities — do not let them bleed into sections, metrics, or quotes. Extract from every relevant source, including slides, diagrams, screenshots, and architecture images — read on-slide labels, boxes, arrows, and printed metrics, and route them into the matching theme section. Do not skip an image-based source and do not quarantine slides in a separate section.
 
 ## Phase 2: Core Document Generation
 ### Step 1 — Content-Driven Architecture
@@ -42,17 +41,10 @@ Auto-discover the 8–12 major sub-topics or themes regarding {{Subject}} from t
 For each discovered topic, write an exhaustive deep-dive section using this structure: ### [Discovered Topic Heading], then Core Specifications; Granular Metrics (exact numbers, dates, prices, explicit limits, preserved precisely); Proper Nouns; Comparison Tables (markdown, wherever sources present competing options or variations); Real-World Practitioner Intel (tips, "in-the-trenches" learnings, best practices from forums); Risk Mitigation (Things to Avoid, common pitfalls, anti-patterns, troubleshooting); Verbatim Quotes (where they add critical precision); Tradeoffs & Constraints.
 SUBSECTION OMISSION RULE: if a subsection has no grounded content in the sources, OMIT that subsection heading entirely — do NOT print a placeholder, and do NOT pad it with restated facts or soft non-risks to fill the slot. If Tier-2 practitioner/forum sources are absent entirely, state that ONCE at the top of the document, then omit the empty subsections.
 ### Step 3 — Advanced Synthesis & Analytical Overlays
-Append exactly three closing sections and NO others: 1. Gaps, Contradictions & Disconnects (esp. where real-world findings contradict official documentation); 2. Surprising Insights (non-obvious, counter-intuitive findings, clever workarounds, hidden patterns); 3. Missing Information & Blind Spots (what the sources fail to answer — the exact boundaries of the current data pool). Do NOT append a fourth section of any kind — no reviewer's read, editorial verdict, advisory opinion, recommendation, or commentary, even if flagged as "not grounded." The document ends after "Missing Information & Blind Spots."
+Append exactly three closing sections, and no others: 1. Gaps, Contradictions & Disconnects (esp. where real-world findings contradict official documentation); 2. Surprising Insights (non-obvious, counter-intuitive findings, clever workarounds, hidden patterns); 3. Missing Information & Blind Spots (what the sources fail to answer — the exact boundaries of the current data pool). The document ends after "Missing Information & Blind Spots."
 
 ## Execution Rules
 - No Condensing or Summarizing: match source depth; vague descriptions or rounded numbers are useless.
 - Strict Grounding: base every claim, metric, and finding strictly on the source text; do not use outside training data or assumptions.
 - Format: output a single continuous Markdown document, zero preamble, zero conversational intro, zero outro. Start immediately with the first section header.
-
-Before finishing, verify your output against each of these:
-- Did I synthesize content from EVERY loaded source? Enumerate the sources by title and confirm at least one grounded claim attributed to each. A "grounded claim" means a concrete fact, metric, or finding extracted from the source text — restating the source title or inventing a vague observation does not satisfy the requirement. If a source is image-based (slides, diagrams, screenshots), Rule 4 still requires its visual content be extracted and routed into a theme section — a slide deck is not a valid source to skip. The ONLY sources that may be absent from the output are those excluded under Rule 3 (zero {{Subject}} content); if you excluded any source on that basis, name it once at the top. Silently dropping a source that does contain {{Subject}} content invalidates the output — ensure every relevant source is integrated before finalizing.
-- Does the output contain concrete findings with source attribution?
-- Did I exclude marketing language and unsupported claims?
-- Did I append exactly three closing sections and no fourth?
-Correct any failures silently and output only the corrected result.
 ```
