@@ -5,8 +5,8 @@ domain: systems-architecture
 source_format: MEMORY.md dashboard + Hindsight recall (memory files under ~/.claude/memory)
 target_orchestrator: Claude Sonnet 4.6 (session-scoped; operator runs interactively)
 downstream_consumer: Operator (approves the drift lists, then reviews deletions and rule PRs)
-version: 1.0.0
-last_updated: 2026-07-02
+version: 1.1.0
+last_updated: 2026-07-16
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-005_memory-harvest.md
 use_for: Audit the memory store for drift (stale, duplicate, contradicting entries) and harvest recurring corrections into rules, gating deletions and rule-promotions behind approval
 ---
@@ -33,11 +33,11 @@ I'm harvesting what our operating system has learned into enforced improvements,
 
 ## The task — Phase 1: current-state diagnosis (READ-ONLY)
 
-1. Read MEMORY.md end to end. Report total entries, and every entry pair that CONTRADICTS another (cite both) or DUPLICATES another (cite both).
+1. Read MEMORY.md end to end. Report total entries, and every entry pair that CONTRADICTS another (cite both) or DUPLICATES another (cite both). Check both directions: MEMORY.md-internal (one line contradicting another) AND cross-store (a MEMORY.md correction that has superseded a fact still live in the Hindsight bank — the correction landed in the file but the stale fact still recalls). A cross-store contradiction is a real finding; fixing it is a Hindsight `invalidate` (a write), so it belongs in Phase 2, not here.
 2. Flag STALE-SUSPECT entries: any entry naming a file, flag, or PR — spot-check that the artifact still exists (a memory reflects what was true when written, not necessarily now).
-3. Via Hindsight recall (cap limit ~= 3, tight queries, <= 3 KB per call — delegate large reads to a subagent), identify corrections that recur across multiple sessions. These are rule candidates, not memory.
+3. Via Hindsight recall (cap limit ~= 3, tight queries, <= 3 KB per call — delegate large reads to a subagent; note recall may return a payload far larger than the cap that the harness spills to disk, so extract via subagent rather than reading it whole), identify corrections that recur across multiple sessions. For each, classify it: PROMOTE (recurs but has no rule/hook yet — a genuine candidate) or LANDED (recurs but is already an enforced rule/hook — the finding is "confirm it holds," not "create"). In a mature system most recurring corrections are already LANDED; do not imply a new rule is needed when one exists. Also note bank duplication itself (many near-identical recall hits for one fact) as a drift signal worth an operator flag.
 4. Read the "Corrections (override stale entries)" block: identify which corrections have fully superseded their target, so the target can be deleted.
-5. Output three lists: CONTRADICTIONS | STALE-SUSPECT | RULE-CANDIDATES.
+5. Output three lists: CONTRADICTIONS (mark each INTERNAL or CROSS-STORE) | STALE-SUSPECT | RULE-CANDIDATES (mark each PROMOTE or LANDED).
 
 STOP here. Present the three lists and end the turn. No deletions or writes in Phase 1.
 
@@ -69,6 +69,7 @@ Michael is present. When you have enough to act, act. End your turn at the Phase
 
 Draft the three lists. Verify against each check below. Correct any failure silently and deliver only the corrected result.
 - For every STALE-SUSPECT entry, did I actually open the named file/flag/PR to confirm state, not infer it from age?
-- Are RULE-CANDIDATES backed by recurrence across multiple sessions, not a single recall hit?
+- Are RULE-CANDIDATES backed by recurrence across multiple sessions, not a single recall hit, and did I mark each PROMOTE vs LANDED rather than implying a new rule where one already exists?
+- Did I check for CROSS-STORE contradictions (a MEMORY.md correction still contradicted by a live Hindsight fact), not only MEMORY.md-internal ones?
 - Did I perform zero deletions or writes in Phase 1 and end on the STOP?
 ```
