@@ -15,6 +15,13 @@ name: Compile and Deploy Prompt Registry
 # Jobs that need access declare it explicitly.
 permissions: {}
 
+# Strict shell for every run: block. GitHub's default is `bash -e` only;
+# this forces `-eo pipefail` globally so a failing command in a pipe is caught.
+# Multi-line blocks below still add `set -u` for unset-variable safety.
+defaults:
+  run:
+    shell: bash
+
 on:
   pull_request:
     branches:
@@ -46,12 +53,13 @@ jobs:
 
       - name: Coverage invariant — compiled count must equal source count
         run: |
+          set -euo pipefail
           echo "=== Coverage invariant: compiled prompts == source .md files ==="
           source_count=$(find prompts -name "*.md" ! -name "AGENTS.md" | wc -l | tr -d ' ')
           compiled_count=$(jq '.prompts | length' dist/prompts_latest.json)
           echo "Source .md files: $source_count"
           echo "Compiled prompts: $compiled_count"
-          if [ "$compiled_count" -ne "$source_count" ]; then
+          if [[ "$compiled_count" -ne "$source_count" ]]; then
             echo "COVERAGE_FAIL: $((source_count - compiled_count)) source file(s) missing from index ($compiled_count/$source_count indexed)"
             exit 1
           fi
@@ -59,9 +67,10 @@ jobs:
 
       - name: Verify feedback footer present on all prompts
         run: |
+          set -euo pipefail
           echo "=== Checking feedback footer on all compiled prompt_text fields ==="
           missing=$(jq -r '.prompts[] | select(.prompt_text | contains("Score this prompt") | not) | .id' dist/prompts_latest.json)
-          if [ -n "$missing" ]; then
+          if [[ -n "$missing" ]]; then
             echo "FOOTER MISSING on: $missing"
             exit 1
           fi
@@ -69,6 +78,7 @@ jobs:
 
       - name: Report artifact sizes
         run: |
+          set -euo pipefail
           echo "=== dist/ artifact sizes ==="
           ls -lh dist/ 2>/dev/null || echo "No dist/ output found"
 
@@ -117,11 +127,11 @@ jobs:
         run: python scripts/compile_prompts.py
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa  # v3
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa  # v3.0.1
         with:
           path: dist/
           # dist/ is git-ignored; CI generates it fresh on every deploy run
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e  # v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e  # v4.0.5
