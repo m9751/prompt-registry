@@ -5,8 +5,8 @@ domain: systems-architecture
 source_format: MEMORY.md dashboard + Hindsight recall (memory files under ~/.claude/memory)
 target_orchestrator: Claude Sonnet 4.6 (session-scoped; operator runs interactively)
 downstream_consumer: Operator (approves the drift lists, then reviews deletions and rule PRs)
-version: 1.1.0
-last_updated: 2026-07-16
+version: 1.2.0
+last_updated: 2026-07-17
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-005_memory-harvest.md
 use_for: Audit the memory store for drift (stale, duplicate, contradicting entries) and harvest recurring corrections into rules, gating deletions and rule-promotions behind approval
 ---
@@ -38,8 +38,9 @@ I'm harvesting what our operating system has learned into enforced improvements,
 3. Via Hindsight recall (cap limit ~= 3, tight queries, <= 3 KB per call — delegate large reads to a subagent; note recall may return a payload far larger than the cap that the harness spills to disk, so extract via subagent rather than reading it whole), identify corrections that recur across multiple sessions. For each, classify it: PROMOTE (recurs but has no rule/hook yet — a genuine candidate) or LANDED (recurs but is already an enforced rule/hook — the finding is "confirm it holds," not "create"). In a mature system most recurring corrections are already LANDED; do not imply a new rule is needed when one exists. Also note bank duplication itself (many near-identical recall hits for one fact) as a drift signal worth an operator flag.
 4. Read the "Corrections (override stale entries)" block: identify which corrections have fully superseded their target, so the target can be deleted.
 5. Output three lists: CONTRADICTIONS (mark each INTERNAL or CROSS-STORE) | STALE-SUSPECT | RULE-CANDIDATES (mark each PROMOTE or LANDED).
+6. After the three lists, emit a structured count block so a drift-reduction loop (e.g. PRM-INFRA-008) can diff drift across iterations without re-parsing the prose. Emit it as a fenced JSON block whose info-string is the single token `infra005-drift-counts` (a json fence tagged with that label), containing exactly these integer fields: `contradictions_internal`, `contradictions_crossstore`, `stale_suspect`, `rule_candidates_promote`, `rule_candidates_landed`, and `total_open_drift` = contradictions_internal + contradictions_crossstore + stale_suspect + rule_candidates_promote (rule_candidates_landed is already enforced and is NOT open drift, so exclude it). The counts must match the three lists exactly.
 
-STOP here. Present the three lists and end the turn. No deletions or writes in Phase 1.
+STOP here. Present the three lists and the count block, then end the turn. No deletions or writes in Phase 1.
 
 ## Phase 2: apply (ONLY after the operator approves specific items)
 
@@ -72,4 +73,5 @@ Draft the three lists. Verify against each check below. Correct any failure sile
 - Are RULE-CANDIDATES backed by recurrence across multiple sessions, not a single recall hit, and did I mark each PROMOTE vs LANDED rather than implying a new rule where one already exists?
 - Did I check for CROSS-STORE contradictions (a MEMORY.md correction still contradicted by a live Hindsight fact), not only MEMORY.md-internal ones?
 - Did I perform zero deletions or writes in Phase 1 and end on the STOP?
+- Does the infra005-drift-counts block's totals match the three lists exactly, and does total_open_drift exclude rule_candidates_landed?
 ```
