@@ -5,7 +5,7 @@ domain: systems-architecture
 source_format: PRM-INFRA-005 Phase-1 drift lists (structured counts) + operator approvals
 target_orchestrator: Claude Code (loop driver) + PRM-INFRA-005 as the read-only drift signal
 downstream_consumer: Operator (approves each deletion / rule-promotion; reviews the run ledger)
-version: 1.0.0
+version: 1.0.1
 last_updated: 2026-07-17
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-008_memory-drift-loop.md
 use_for: Iterate a memory store to drift-clear by driving the PRM-INFRA-005 audit in a one-approved-change-per-iteration loop against the three drift counts, with a human gate on every write and a re-audit that confirms each finding cleared, until drift-clear or an exhausted budget
@@ -98,6 +98,8 @@ ITERATION n (n >= 1) — one approved change:
 
 <one_change_per_iteration>
 Exactly one finding and one approved change per iteration. Never batch two findings into one approval or one apply, even if they look related — if you cannot tell which change moved the count (or created new drift), the loop has failed its core discipline. A single deletion that legitimately touches both a MEMORY.md line and its pointer is still ONE finding (the entry and its pointer are one unit). A rule promotion that touches the rule file and leaves the memory entry as a pointer is ONE finding.
+
+A DUPLICATED cross-store contradiction is ONE finding even though closing it takes several invalidates. When one MEMORY.md correction is contradicted by N distinct live Hindsight facts all asserting the same superseded claim, that cluster is a single finding (the same false claim), and invalidating all N of them in the one iteration is still one change — they are one unit, like a line and its pointer. Watch for the partial-clear trap: if you invalidate only ONE fact of a duplicated cluster and re-audit, the contradiction still recalls via its siblings and the count barely moves — that is NOT a failed fix to revert, it is a mis-scoped finding. Re-scope the finding to the whole cluster and invalidate the rest in the next iteration (or the same one, since the cluster is one finding), rather than reverting a correct invalidate. Only WORLD/EXPERIENCE facts can be invalidated; a derived OBSERVATION regenerates from its sources and is not a separately-invalidatable item — do not try to invalidate it or count it as unclosed; it clears when its source facts do.
 </one_change_per_iteration>
 
 <termination>
