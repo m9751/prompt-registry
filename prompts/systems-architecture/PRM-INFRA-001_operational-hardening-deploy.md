@@ -5,8 +5,8 @@ domain: systems-architecture
 source_format: Code files + ADR + deploy plan
 target_orchestrator: Claude Code
 downstream_consumer: Human (review then approve)
-version: 2.6.0
-last_updated: 2026-06-07
+version: 2.7.0
+last_updated: 2026-07-18
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-001_operational-hardening-deploy.md
 use_for: Review code for correctness then execute a hardened deploy using the Phased Build Protocol
 ---
@@ -58,6 +58,8 @@ Before declaring the Verification Contract, classify the change risk level. This
 
 **HIGH-risk changes require a staging deploy and full verification pass before production.** Ask the user to confirm the target is staging, complete verification, then re-run this prompt targeting production.
 
+**Staging WAIVER (narrow) — only when staging provably cannot exercise the change.** A HIGH-risk change may substitute a documented waiver for the staging pass ONLY when a staging run would be a guaranteed no-op because staging cannot exercise the change (e.g., the target rows/objects are absent in the staging environment, so the change touches nothing there). The waiver MUST state, each verified before deploy: (a) WHY staging cannot exercise it, proven by a MEASURED falsifying oracle — cite the actual staging query and its zero-row (or absent-object) result showing the target set does not exist in staging; asserted absence ("staging is inconvenient", "staging is empty", a claim without the query output) does NOT satisfy (a); (b) the compensating evidence that the production change is safe (e.g., artifact byte-identical to live, mutation guarded + idempotent, apply scope bounded to a known row set); (c) explicit operator acknowledgment of the waiver; (d) because a waived-staging deploy makes production the FIRST-ever execution of the change, its Step 1 ROLLBACK TRIGGER must be AUTOMATED, OR (b) must show the revert is a single bounded operation (e.g., one revert commit, one idempotent counter-UPDATE). If any of (a)/(b)/(c)/(d) is missing, the staging pass is still mandatory. This is a staging-only waiver and NEVER a review waiver — it does not soften the Stage 1 rule that a HIGH-risk change missing specialist review is a NEEDS-FIXES block.
+
 State the risk level and get user confirmation before proceeding to Step 1.
 
 ## Step 1 — Declare Typed Verification Contract
@@ -95,6 +97,15 @@ For **docs/PR-only deploys** (Markdown, spec files):
 - 5xx rate: `N/A — no service endpoint` ✓
 - Health check: `N/A — static content` ✓
 
+For **DB-migration deploys** (Supabase migration apply, schema/data DDL with no service endpoint):
+- Container restarts: `N/A — DB migration, no service endpoint` (justified N/A) ✓
+- 5xx rate: `N/A — DB migration, no service endpoint` (justified N/A) ✓
+- Health check: `N/A — DB migration, no service endpoint` (justified N/A) ✓
+- DB-appropriate substitutes to measure INSTEAD (these are the real failure gates for this deploy type):
+  - The next scheduled job that consumes the changed objects errors > 0 (e.g., the biweekly scoring cron run after a scoring-function redeploy) — check its next run's error count against a zero baseline. If that job's next scheduled run falls OUTSIDE the declared VERIFICATION_TIMEOUT, the gate is unobservable within the rollback window: either extend VERIFICATION_TIMEOUT for this deploy or manually trigger the job once as part of verification so the failure gate is actually measured before the row closes
+  - Any NEW row in `get_advisors` (security or performance) attributable to the change, compared against a pre-deploy advisor baseline captured before apply
+  - Post-apply row-value assertions on the specific mutated rows do not match expected values (this is the SUCCESS EVIDENCE row-value check; named here so the failure side is symmetric)
+
 For custom deploy types, declare which indicators apply and which are N/A with explicit justification before proceeding.
 
 **VERIFICATION TIMEOUT** — how long to wait for SUCCESS EVIDENCE before triggering rollback. Default is the declared VERIFICATION_TIMEOUT from Step 1, but adjust for the deploy target:
@@ -131,6 +142,8 @@ If a required reviewer subagent is unavailable or the file type has no defined r
 - **MODERATE-risk change**: general-purpose fallback is permitted but requires: (a) explicit human signoff from someone familiar with the affected system, AND (b) a written fallback checklist (what would a specialist reviewer have checked — list at least 3 items relevant to this file type). Operator must confirm both before Stage 2.
 - **HIGH-risk change** (DB migration, auth/security surface, infra manifest that gates production): missing specialist review is a **NEEDS-FIXES** block. Do not proceed. No waiver or PR comment overrides this. The only path forward is: (a) obtain the specialist review, or (b) reclassify the change as LOW/MODERATE with documented justification that the HIGH-risk criteria do not actually apply.
 - **Operational Markdown/spec files** (prompt files, runbooks, verification contracts, deploy procedures — classified HIGH by Step 0.5): use this checklist as the specialist review path: (1) are all success criteria independently observable (not self-reported)? (2) are all failure paths enumerated with explicit outcomes? (3) does the prompt's risk classification correctly account for its own operational impact? (4) are there any self-referential loops (e.g., this prompt governs its own deploy)? A human must sign off on all four items. This is the only approved path for deploying operational Markdown changes with no external specialist available.
+
+Before aggregating, flag whether any changed file governs the deploy, verification, rollback, or review path itself (a hook, a gate, this prompt, the reviewer routing, or a pm_invocations/CI control). If so, mark the review **self-referential** and route it additionally through governance-reviewer — a change to the machinery that reviews or gates deploys cannot be its own sole reviewer. If governance-reviewer is unavailable, a self-referential HIGH-risk change is a NEEDS-FIXES block until either it is obtained or a human signs off on the self-referential-loop item (checklist item 4 above); it does not silently proceed on the language-reviewer verdict alone. This generalizes the self-referential-loop check beyond the operational-Markdown checklist above.
 
 Aggregate into worst-of verdict:
 - SHIP (0 HIGH, 0 MED, ≤2 LOW) → proceed to Stage 2
@@ -195,6 +208,11 @@ After completing this deploy — whether it succeeded or failed — answer these
 - Docs-only PRs now self-qualify as LOW regardless of file count
 - PR-specific SUCCESS EVIDENCE path added (lighter contract for Markdown-only deploys)
 - Step 0.5 downgrade rationale made explicit
+
+**Second-run findings incorporated into v2.7.0 (2026-07-18 run on ST migration-apply-drift):**
+- Step 0.5 gained a narrow staging WAIVER for when staging provably cannot exercise the change (target rows absent), guarded by three required conditions
+- FAILURE INDICATORS gained a DB-migration branch (restart/5xx/health are justified N/A; substitute the next-cron-run error count and a get_advisors regression check)
+- Stage 1 gained a self-referential-change flag that routes any change to deploy/verification/rollback/review machinery through governance-reviewer
 
 Note: On subsequent runs, skip this section if you have no new observations.
 
