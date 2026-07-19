@@ -5,8 +5,8 @@ domain: systems-architecture
 source_format: Code files + ADR + deploy plan
 target_orchestrator: Claude Code
 downstream_consumer: Human (review then approve)
-version: 2.7.0
-last_updated: 2026-07-18
+version: 2.8.0
+last_updated: 2026-07-19
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/systems-architecture/PRM-INFRA-001_operational-hardening-deploy.md
 use_for: Review code for correctness then execute a hardened deploy using the Phased Build Protocol
 ---
@@ -21,6 +21,15 @@ Two-stage hardening sequence for any deploy. Stage 1 dispatches language-appropr
 You are executing a two-stage operational hardening sequence before deploying code.
 
 ## Step 0 — Gather Context
+
+**Mode gate — set this before anything else.** Decide whether the artifact under review is a git-tracked deploy or an uncommitted plan file, and record `HARDENING_MODE`:
+
+- **`deploy`** (default): the artifact is committed (or about-to-be-committed) code/spec whose lineage back to `origin/main` matters. Run the full Step-0 git-lineage plumbing below.
+- **`doc-hardening-of-a-plan`**: the artifact is an uncommitted plan file (e.g., a `plans/*.md` execution artifact, a scratch design doc, a draft not yet on any branch) that has no meaningful git lineage to trace. Set this ONLY when the target is a working-tree file that is not yet committed and whose purpose is planning, not deployment.
+
+**When `HARDENING_MODE=doc-hardening-of-a-plan`, skip the git-lineage plumbing** — do NOT set `DEPLOY_SHA`, do NOT run the PR-head-match assertion, do NOT run the clean-working-tree HALT (an uncommitted plan file will always dirty the tree, so that gate is a guaranteed false HALT here). These checks assert facts about a committed deploy that a plan file cannot satisfy. Instead do the reduced context read: record the plan file's path and confirm it exists and is readable, note `HARDENING_MODE=doc-hardening-of-a-plan` explicitly in your findings, then proceed directly to Step 0.5 (risk is still classified by operational impact — a plan that governs a real deploy is not automatically LOW). Everything downstream that keys off `DEPLOY_SHA`/`DEPLOY_BASE_OID` (Step 1 lineage/content SUCCESS EVIDENCE) is likewise `N/A — doc-hardening-of-a-plan, no committed artifact`; the review still runs (Stage 1), the plan's content is still verified against its stated intent, and the self-referential flag still applies.
+
+**When `HARDENING_MODE=deploy` (the default), run the full plumbing below.**
 
 Before asking anything, do a silent context read:
 - Run `git log --oneline -5` and `git branch --show-current` to identify the active project
@@ -213,6 +222,9 @@ After completing this deploy — whether it succeeded or failed — answer these
 - Step 0.5 gained a narrow staging WAIVER for when staging provably cannot exercise the change (target rows absent), guarded by three required conditions
 - FAILURE INDICATORS gained a DB-migration branch (restart/5xx/health are justified N/A; substitute the next-cron-run error count and a get_advisors regression check)
 - Stage 1 gained a self-referential-change flag that routes any change to deploy/verification/rollback/review machinery through governance-reviewer
+
+**Third-run findings incorporated into v2.8.0 (2026-07-19 run on loop-consultant rubric-only-fold plan):**
+- Step 0 gained a `HARDENING_MODE` gate. `doc-hardening-of-a-plan` mode skips the git-lineage plumbing (DEPLOY_SHA, PR-head match, clean-working-tree HALT) when the artifact is an uncommitted plan file rather than a git-tracked deploy — those checks assert committed-deploy facts a plan file cannot satisfy, and the clean-tree gate was a guaranteed false HALT for any working-tree plan. Review (Stage 1), risk classification by operational impact, and the self-referential flag still apply; only the lineage/content SUCCESS EVIDENCE keyed off a committed SHA becomes justified N/A.
 
 Note: On subsequent runs, skip this section if you have no new observations.
 
