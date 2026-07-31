@@ -84,7 +84,7 @@ curl -s https://m9751.github.io/prompt-registry/prompts_latest.json | jq '.promp
 ### 🚀 Product & Delivery
 | ID | Prompt Title | Use This For | Source Format | Target Model | Version | Link |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `PRM-NBLM-001` | [Slide-to-Human Briefing Master](prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md) | Convert a slide deck into a human-readable executive summary | PPTX / PDF | NotebookLM | `1.0.0` | [View File](prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md) |
+| `PRM-NBLM-001` | [Slide-to-Human Briefing Master](prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md) | Convert a slide deck into a human-readable executive summary | PPTX / PDF | NotebookLM | `1.1.0` | [View File](prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md) |
 | `PRM-NBLM-010` | [NotebookLM Usage Patterns — 20 Prompt Templates](prompts/product-delivery/PRM-NBLM-010_notebooklm-usage-patterns.md) | Pick the right prompt template for a NotebookLM task across research, content creation, learning, brainstorming, and deep reading | Any (documents, PDFs, research papers, feedback, meeting notes, training materials) | NotebookLM | `1.0.0` | [View File](prompts/product-delivery/PRM-NBLM-010_notebooklm-usage-patterns.md) |
 | `PRM-PDLV-006` | [Static Guide Overview Video — Agent System Prompt](prompts/product-delivery/PRM-PDLV-006_static-guide-overview-video.md) | Build or rebuild a narrated overview video embedded in a static HTML product guide | HTML guide URL + scene spec (JSON/YAML) + image captures | Claude Code / Cursor Agent | `1.1.0` | [View File](prompts/product-delivery/PRM-PDLV-006_static-guide-overview-video.md) |
 
