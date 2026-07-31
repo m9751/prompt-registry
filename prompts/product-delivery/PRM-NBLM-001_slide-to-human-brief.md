@@ -5,8 +5,8 @@ domain: product-delivery
 source_format: PPTX / PDF
 target_orchestrator: NotebookLM
 downstream_consumer: Human (copy-paste)
-version: 1.0.0
-last_updated: 2026-06-02
+version: 1.1.0
+last_updated: 2026-07-31
 hosted_url: https://raw.githubusercontent.com/m9751/prompt-registry/main/prompts/product-delivery/PRM-NBLM-001_slide-to-human-brief.md
 use_for: Convert a slide deck into a human-readable executive summary
 ---
@@ -30,13 +30,16 @@ Your task is to produce a structured executive briefing with the following secti
 Rules:
 - Use plain English. No jargon unless it was in the source material.
 - Do not hallucinate data. If a number is not in the slides, do not include it.
-- Keep the entire output under 500 words.
+- Keep the entire output at or under 450 words, including all section headings.
+- Output only the four sections above. Do not add a closing offer, follow-up question, or any assistant commentary (for example, "Let me know if you'd like a PowerPoint").
+- Use no emoji.
+- Do not include citation markers, footnote numbers, or source references in the prose.
 
 Source material: {{Document_Title}}
 
 Before finishing, verify your output against each of these:
-- Did I cover every major section of the source deck?
-- Is the output written for a human reader (no raw bullet dumps or technical jargon)?
-- Did I include a clear bottom-line finding?
+- Is the entire output at or under 450 words with all four sections present and a clear bottom-line finding?
+- Is the prose free of emoji, citation markers, and any closing offer or follow-up question?
+- Is it written for a human reader in plain English (no raw bullet dumps or unexplained jargon)?
 Correct any failures silently and output only the corrected result.
 ```
